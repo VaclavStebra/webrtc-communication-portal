@@ -34,7 +34,8 @@ gulp.task('react', () => {
                 module: true,
                 main: true,
                 jsnext: true,
-                browser: true
+                browser: true,
+                extensions: ['.js', '.jsx']
             }),
             global()
         ]
