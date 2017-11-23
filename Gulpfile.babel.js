@@ -41,7 +41,7 @@ gulp.task('react', () => {
         ]
     }).then((bundle) => {
         return bundle.write({
-            name: 'MedicomTestApp',
+            name: 'WebRTCCommunicationPortal',
             format: 'iife',
             file: 'dist/app.js'
         });

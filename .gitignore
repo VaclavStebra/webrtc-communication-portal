@@ -1,6 +1,6 @@
 # Custom stuff
+.idea
 dist/
-.idea/sonarlint/
 
 # Genertated below
 # Created by .ignore support plugin (hsz.mobi)
