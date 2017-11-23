@@ -1,0 +1,41 @@
+{
+  "name": "webrtc-communication-portal",
+  "version": "0.0.1",
+  "description": "Communication portal built using WebRTC. Part of Diploma thesis at Faculty of Informatics at Masaryk University",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp build",
+    "build:watch": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaclavStebra/webrtc-communication-portal.git"
+  },
+  "author": "Vaclav Stebra <vstebra@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VaclavStebra/webrtc-communication-portal/issues"
+  },
+  "homepage": "https://github.com/VaclavStebra/webrtc-communication-portal#readme",
+  "dependencies": {
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^3.1.0",
+    "rollup": "^0.51.8",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "run-sequence": "^2.2.0"
+  }
+}

@@ -1,4 +1,5 @@
 # Custom stuff
+dist/
 .idea/sonarlint/
 
 # Genertated below
