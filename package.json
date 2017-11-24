@@ -7,6 +7,7 @@
     "build": "gulp build",
     "build:watch": "gulp",
     "lint": "eslint src --ext .js --ext .jsx",
+    "serve": "serve dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +22,8 @@
   "homepage": "https://github.com/VaclavStebra/webrtc-communication-portal#readme",
   "dependencies": {
     "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react-dom": "^16.1.1",
+    "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -42,6 +44,7 @@
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "run-sequence": "^2.2.0"
+    "run-sequence": "^2.2.0",
+    "serve": "^6.4.1"
   }
 }
