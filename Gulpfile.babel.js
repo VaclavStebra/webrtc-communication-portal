@@ -10,71 +10,45 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import commonJs from 'rollup-plugin-commonjs';
 import global from 'rollup-plugin-node-globals';
 
+import BUILD_CONFIG from './config/build';
+
 gulp.task('react', () => {
     return rollup({
-        input: 'src/app.js',
+        input: BUILD_CONFIG.rollup.input,
         plugins: [
-            babel({
-                exclude: 'node_modules/**',
-                presets: [
-                    'react',
-                    ['env', { modules: false }]
-                ],
-                plugins: [
-                    'external-helpers'
-                ],
-                babelrc: false
-            }),
-            commonJs({
-                include: [
-                    'node_modules/**'
-                ]
-            }),
-            nodeResolve({
-                module: true,
-                main: true,
-                jsnext: true,
-                browser: true,
-                extensions: ['.js', '.jsx']
-            }),
+            babel(BUILD_CONFIG.rollup.babel),
+            commonJs(BUILD_CONFIG.rollup.commonJs),
+            nodeResolve(BUILD_CONFIG.rollup.nodeResolve),
             global()
         ]
     }).then((bundle) => {
-        return bundle.write({
-            name: 'MedicomTestApp',
-            format: 'iife',
-            file: 'dist/app.js'
-        });
+        return bundle.write(BUILD_CONFIG.rollup.bundle);
     });
 });
 
 gulp.task('style', () => {
-    return gulp.src('src/styles/app.scss')
+    return gulp.src(BUILD_CONFIG.styles.input)
         .pipe(sass())
         .on('error', sass.logError)
-        .pipe(concat('app.css'))
-        .pipe(gulp.dest('dist/'));
+        .pipe(concat(BUILD_CONFIG.styles.fileName))
+        .pipe(gulp.dest(BUILD_CONFIG.dist_dir));
 });
 
 gulp.task('app', () => {
-   return gulp.src('src/index.html')
-       .pipe(gulp.dest('dist/'));
+   return gulp.src(BUILD_CONFIG.app.input)
+       .pipe(gulp.dest(BUILD_CONFIG.dist_dir));
 });
 
 gulp.task('clean', () => {
     return del([
-        'dist/'
+        BUILD_CONFIG.dist_dir
     ]);
 });
 
 gulp.task('watch', () => {
-    const options = {
-        debounceDelay: 1000
-    };
-
-    gulp.watch('src/components/**/*.jsx', options, ['react']);
-    gulp.watch('src/styles/**/*.scss', options, ['style']);
-    gulp.watch('src/index.html', options, ['app']);
+    for (const path of BUILD_CONFIG.watch.paths) {
+        gulp.watch(path.glob, BUILD_CONFIG.watch.options, path.tasks)
+    }
 });
 
 gulp.task('default', () => {
