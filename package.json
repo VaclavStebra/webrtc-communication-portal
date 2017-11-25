@@ -45,7 +45,6 @@
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "run-sequence": "^2.2.0",
-    "serve": "^6.4.1"
+    "run-sequence": "^2.2.0"
   }
 }
