@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Test from './components/test';
+import Root from './components/Root';
 
 const mountPoint = document.getElementById('react');
 
 ReactDOM.render(
   (
-    <Test />
+    <Root />
   ),
-  mountPoint,
+  mountPoint
 );
