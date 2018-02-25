@@ -1,8 +1,8 @@
 import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';
 
-import HomePage from './HomePage';
-import TestPage from './TestPage';
+import HomePage from './HomePage/HomePage';
+import TestPage from './TestPage/TestPage';
 
 export default class Root extends React.Component {
   render() {
