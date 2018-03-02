@@ -14,18 +14,18 @@ export default class HomePage extends React.Component {
         <h2>What is it?</h2>
         <Divider />
         <List>
-          <ListItem disabled>
-            Final {'Master\'s'} thesis at <a href={FI}>FI MUNI</a>
-          </ListItem>
           <ListItem
             primaryText="
               Communication portal built using modern Web Technologies such as WebRTC
               "
             disabled
           />
+          <ListItem disabled>
+            {'Master\'s'} thesis at <a href={FI} target="_blank">FI MUNI</a>
+          </ListItem>
         </List>
         <Divider />
-        <h2>Who build it?</h2>
+        <h2>Who built it?</h2>
         <div>
           <RaisedButton
             href={FI_ME}
@@ -45,9 +45,7 @@ export default class HomePage extends React.Component {
             label="Github"
             secondary
             icon={
-              <FontIcon className="material-icons">
-                code
-              </FontIcon>
+              <FontIcon className="muidocs-icon-custom-github" />
             }
           />
         </div>

@@ -52,7 +52,19 @@ const BUILD_CONFIG = {
     },
     paths: [
       {
+        glob: 'src/app.js',
+        tasks: ['react']
+      },
+      {
         glob: 'src/components/**/*.jsx',
+        tasks: ['react']
+      },
+      {
+        glob: 'src/constants/**/*.js',
+        tasks: ['react']
+      },
+      {
+        glob: 'src/utils/**/*.js',
         tasks: ['react']
       },
       {

@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import getTheme from './utils/theme';
 import Root from './components/Root';
 
 const App = () => (
-  <MuiThemeProvider>
+  <MuiThemeProvider muiTheme={getTheme()}>
     <Root />
   </MuiThemeProvider>
 );
