@@ -1,9 +1,13 @@
 import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';
+
 import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
 
 import HomePage from './HomePage/HomePage';
 import TestPage from './TestPage/TestPage';
+
+import { GITHUB_LINK } from '../constants/links';
 
 export default class Root extends React.Component {
   render() {
@@ -12,8 +16,13 @@ export default class Root extends React.Component {
         <AppBar
           title="WebRTC communication portal"
           showMenuIconButton={false}
+          iconElementRight={
+            <IconButton iconClassName="material-icons" href={GITHUB_LINK} >
+            code
+            </IconButton >
+          }
         />
-        <div className="container">
+        <div className="container" >
           <Router >
             <div >
               <Route
@@ -27,7 +36,7 @@ export default class Root extends React.Component {
               />
             </div >
           </Router >
-        </div>
+        </div >
       </div >
     );
   }
