@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { shallow } from 'enzyme';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import HomePage from '../../../src/components/HomePage/HomePage';
+import HomePage from '../../../src/components/pages/home/HomePage';
 
 describe('HomePage', () => {
   it('has text / route', () => {
