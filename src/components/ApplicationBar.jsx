@@ -12,7 +12,11 @@ export default class ApplicationBar extends React.Component {
         title="WebRTC communication portal"
         showMenuIconButton={false}
         iconElementRight={
-          <IconButton iconClassName="material-icons" href={GITHUB_REPO}>
+          <IconButton
+            iconClassName="material-icons"
+            href={GITHUB_REPO}
+            target="_blank"
+          >
             code
           </IconButton>
         }
