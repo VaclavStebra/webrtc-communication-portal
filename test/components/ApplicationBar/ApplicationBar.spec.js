@@ -25,9 +25,13 @@ describe('ApplicationBar', () => {
 
     expect(rightIcon).to.have.property('type');
     expect(rightIcon.type.name).to.equal(
-      'FlatButton',
-      'AppBar does not have flat button button'
+      'Link',
+      'AppBar does not have login link'
     );
-    expect(rightIcon.props.label).to.equal('Login', 'AppBar does not have login button');
+    expect(rightIcon.props.to).to.equal('/login', 'AppBar does not have link to login');
+    expect(rightIcon.props.children.type.name).to.equal(
+      'FlatButton',
+      'Login link is not FlatButton'
+    );
   });
 });
