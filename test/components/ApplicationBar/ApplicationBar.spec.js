@@ -15,16 +15,19 @@ describe('ApplicationBar', () => {
     expect(appBar.prop('showMenuIconButton')).to.equal(false, 'AppBar has menu icon');
   });
 
-  it('has link to code on the right side of AppBar', () => {
+  it('has login button on right side when nobody is logged in', () => {
     const element = shallow(<ApplicationBar />);
 
     const appBarList = element.find(AppBar);
     const appBar = appBarList.at(0);
 
-    const githubIcon = appBar.prop('iconElementRight');
+    const rightIcon = appBar.prop('iconElementRight');
 
-    expect(githubIcon).to.have.property('type');
-    expect(githubIcon.type).to.have.property('muiName');
-    expect(githubIcon.type.muiName).to.equal('IconButton');
+    expect(rightIcon).to.have.property('type');
+    expect(rightIcon.type.name).to.equal(
+      'FlatButton',
+      'AppBar does not have flat button button'
+    );
+    expect(rightIcon.props.label).to.equal('Login', 'AppBar does not have login button');
   });
 });
