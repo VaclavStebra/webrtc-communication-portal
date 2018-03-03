@@ -5,7 +5,7 @@ import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
 
-import { FI, FI_ME, GITHUB } from '../../../constants/links';
+import { FI, FI_ME, GITHUB, GITHUB_REPO } from '../../../constants/links';
 
 export default class HomePage extends React.Component {
   render() {
@@ -24,8 +24,9 @@ export default class HomePage extends React.Component {
             {'Master\'s'} thesis at <a href={FI} target="_blank">FI MUNI</a>
           </ListItem>
         </List>
-        <Divider />
         <h2>Who built it?</h2>
+        <Divider />
+        <p />
         <div>
           <RaisedButton
             href={FI_ME}
@@ -49,6 +50,18 @@ export default class HomePage extends React.Component {
             }
           />
         </div>
+        <h2>Source code</h2>
+        <Divider />
+        <p />
+        <RaisedButton
+          href={GITHUB_REPO}
+          target="_blank"
+          label="Source code"
+          primary
+          icon={
+            <FontIcon className="muidocs-icon-custom-github" />
+          }
+        />
       </div>
     );
   }
