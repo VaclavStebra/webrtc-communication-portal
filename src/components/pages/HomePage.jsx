@@ -5,7 +5,7 @@ import Divider from 'material-ui/Divider';
 import { List, ListItem } from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
 
-import { FI, FI_ME, GITHUB, GITHUB_REPO } from '../../../constants/links';
+import { FI, FI_ME, GITHUB, GITHUB_REPO } from '../../constants/links';
 
 export default class HomePage extends React.Component {
   render() {

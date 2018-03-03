@@ -11,9 +11,10 @@ export default class ApplicationBar extends React.Component {
         title="WebRTC communication portal"
         showMenuIconButton={false}
         iconElementRight={
-          <Link to="/login">
-            <FlatButton label="Login" />
-          </Link>
+          <FlatButton
+            label="Login"
+            containerElement={<Link to="/login" />}
+          />
         }
       />
     );
