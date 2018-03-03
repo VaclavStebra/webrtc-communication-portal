@@ -1,9 +1,7 @@
 import React from 'react';
 
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-
-import { GITHUB_REPO } from '../constants/links';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class ApplicationBar extends React.Component {
   render() {
@@ -12,13 +10,7 @@ export default class ApplicationBar extends React.Component {
         title="WebRTC communication portal"
         showMenuIconButton={false}
         iconElementRight={
-          <IconButton
-            iconClassName="material-icons"
-            href={GITHUB_REPO}
-            target="_blank"
-          >
-            code
-          </IconButton>
+          <FlatButton label="Login" />
         }
       />
     );
