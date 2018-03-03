@@ -28,6 +28,12 @@ export default class LoginPage extends React.Component {
             />
             &nbsp;
             <RaisedButton
+              label="Sign up"
+              secondary
+            />
+          </div>
+          <div className="top-separator">
+            <RaisedButton
               label="Back"
               containerElement={<Link to="/" />}
             />

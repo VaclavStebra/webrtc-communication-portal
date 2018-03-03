@@ -56,10 +56,19 @@ describe('LoginPage', () => {
     expect(button.prop('primary')).to.equal(true, 'Log in button is not primary');
   });
 
-  it('has Back button', () => {
+  it('has Sign up button', () => {
     const element = shallow(<LoginPage />);
 
     const button = element.find(RaisedButton).at(1);
+
+    expect(button.prop('label')).to.equal('Sign up', 'Sign up button not present or invalid label');
+    expect(button.prop('secondary')).to.equal(true, 'Sign up button is not secondary');
+  });
+
+  it('has Back button', () => {
+    const element = shallow(<LoginPage />);
+
+    const button = element.find(RaisedButton).at(2);
 
     expect(button.prop('label')).to.equal('Back', 'Back button not present or invalid label');
     expect(button.prop('containerElement').type.name).to.equal(
