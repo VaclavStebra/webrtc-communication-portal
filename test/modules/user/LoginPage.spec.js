@@ -4,7 +4,9 @@ import { shallow } from 'enzyme';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import LoginPage from '../../../src/components/pages/LoginPage';
+import { LoginPage } from '../../../src/modules/user/LoginPage';
+
+const renderLoginPage = () => shallow(<LoginPage onLogin={() => {}} />);
 
 function verifyLoginFields(textFields) {
   const emailField = textFields.at(0);
@@ -31,7 +33,7 @@ function verifyLoginFields(textFields) {
 
 describe('LoginPage', () => {
   it('has heading Login', () => {
-    const element = shallow(<LoginPage />);
+    const element = renderLoginPage();
 
     const heading = element.find('h1').at(0);
 
@@ -39,7 +41,7 @@ describe('LoginPage', () => {
   });
 
   it('has fields for email and password', () => {
-    const element = shallow(<LoginPage />);
+    const element = renderLoginPage();
 
     const textFields = element.find(TextField);
 
@@ -48,7 +50,7 @@ describe('LoginPage', () => {
   });
 
   it('has Log in button', () => {
-    const element = shallow(<LoginPage />);
+    const element = renderLoginPage();
 
     const button = element.find(RaisedButton).at(0);
 
@@ -57,7 +59,7 @@ describe('LoginPage', () => {
   });
 
   it('has Sign up button', () => {
-    const element = shallow(<LoginPage />);
+    const element = renderLoginPage();
 
     const button = element.find(RaisedButton).at(1);
 
@@ -66,7 +68,7 @@ describe('LoginPage', () => {
   });
 
   it('has Back button', () => {
-    const element = shallow(<LoginPage />);
+    const element = renderLoginPage();
 
     const button = element.find(RaisedButton).at(2);
 

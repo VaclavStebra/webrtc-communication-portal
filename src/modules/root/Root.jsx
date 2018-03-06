@@ -1,11 +1,12 @@
 import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import ApplicationBar from './ApplicationBar';
+import HomePage from '../home/HomePage';
+import LoginPageContainer from '../user/LoginPage';
+import ApplicationBar from '../applicationBar/ApplicationBar';
 
-export default class Root extends React.Component {
+export class Root extends React.Component {
   render() {
     return (
       <div>
@@ -22,7 +23,7 @@ export default class Root extends React.Component {
                 <Route
                   path="/login"
                   exact
-                  component={LoginPage}
+                  component={LoginPageContainer}
                 />
               </div>
             </div>
@@ -32,3 +33,9 @@ export default class Root extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(Root);

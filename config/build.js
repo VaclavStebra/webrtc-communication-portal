@@ -13,7 +13,10 @@ const BABEL_CONFIG = {
 const COMON_JS_CONFIG = {
   include: [
     'node_modules/**'
-  ]
+  ],
+  namedExports: {
+    'node_modules/react/index.js': ['Children', 'Component', 'createElement']
+  }
 };
 
 const NODE_RESOLVE_CONFIG = {
@@ -56,11 +59,19 @@ const BUILD_CONFIG = {
         tasks: ['react']
       },
       {
-        glob: 'src/components/**/*.jsx',
+        glob: 'src/constants/**/*.js',
         tasks: ['react']
       },
       {
-        glob: 'src/constants/**/*.js',
+        glob: 'src/modules/**/*.jsx',
+        tasks: ['react']
+      },
+      {
+        glob: 'src/reducers/**/*.js',
+        tasks: ['react']
+      },
+      {
+        glob: 'src/stores/**/*.js',
         tasks: ['react']
       },
       {
@@ -70,7 +81,8 @@ const BUILD_CONFIG = {
       {
         glob: 'src/styles/**/*.scss',
         tasks: ['style']
-      }, {
+      },
+      {
         glob: 'src/index.html',
         tasks: ['app']
       }

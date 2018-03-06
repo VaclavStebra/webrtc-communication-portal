@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import AppBar from 'material-ui/AppBar';
 
-import ApplicationBar from '../../../src/components/ApplicationBar';
+import ApplicationBar from '../../../src/modules/applicationBar/ApplicationBar';
 
 describe('ApplicationBar', () => {
   it('does not have menu icon', () => {
