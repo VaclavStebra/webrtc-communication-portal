@@ -67,6 +67,10 @@ const BUILD_CONFIG = {
         tasks: ['react']
       },
       {
+        glob: 'src/modules/**/*.js',
+        tasks: ['react']
+      },
+      {
         glob: 'src/reducers/**/*.js',
         tasks: ['react']
       },

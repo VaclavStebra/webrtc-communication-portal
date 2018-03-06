@@ -35,7 +35,7 @@ export class Root extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user.data
 });
 
 export default connect(mapStateToProps)(Root);
