@@ -1,14 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import getTheme from './utils/theme';
-import Root from './components/Root';
+import RootContainer from './modules/root/Root';
+
+import configureStore from './stores/configureStore';
+
+const store = configureStore();
 
 const App = () => (
   <MuiThemeProvider muiTheme={getTheme()}>
-    <Root />
+    <Provider store={store}>
+      <RootContainer />
+    </Provider>
   </MuiThemeProvider>
 );
 

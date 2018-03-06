@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Root from '../../../src/components/Root';
-import ApplicationBar from '../../../src/components/ApplicationBar';
+import { Root } from '../../../src/modules/root/Root';
+import ApplicationBar from '../../../src/modules/applicationBar/ApplicationBar';
 
 describe('Root', () => {
   it('has ApplicationBar', () => {
