@@ -2,7 +2,7 @@ import { userReducer } from '../../../../src/modules/user/reducers/userReducer';
 import * as types from '../../../../src/modules/user/constants/ActionTypes';
 
 const initialState = {
-  data: {},
+  data: null,
   uiState: {
     loginInProgress: false,
     loginFailure: false
@@ -40,7 +40,7 @@ describe('User module', () => {
       };
 
       expect(userReducer(initialState, action)).to.deep.equal({
-        data: {},
+        data: null,
         uiState: {
           loginInProgress: false,
           loginFailure: true
@@ -54,7 +54,7 @@ describe('User module', () => {
       };
 
       expect(userReducer(initialState, action)).to.deep.equal({
-        data: {},
+        data: null,
         uiState: {
           loginInProgress: true,
           loginFailure: false

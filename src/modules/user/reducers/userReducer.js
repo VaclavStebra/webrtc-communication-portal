@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-  data: {},
+  data: null,
   uiState: {
     loginFailure: false,
     loginInProgress: false
@@ -22,7 +22,7 @@ export function userReducer(state = initialState, action) {
       };
     case types.LOGIN_FAILURE:
       return {
-        data: {},
+        data: null,
         uiState: {
           loginFailure: true,
           loginInProgress: false
@@ -30,7 +30,7 @@ export function userReducer(state = initialState, action) {
       };
     case types.LOGIN_START:
       return {
-        data: {},
+        data: null,
         uiState: {
           loginFailure: false,
           loginInProgress: true

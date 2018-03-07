@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import TextField from 'material-ui/TextField';
@@ -38,6 +38,12 @@ export class LoginPage extends React.Component {
     this.props.onLogin(email, password);
   }
 
+  redirectIfSomebodyIsLoggedIn() {
+    return this.props.isUserLoggedIn ? (
+      <Redirect to="/" />
+    ) : '';
+  }
+
   renderCircularProgress() {
     if (!this.props.loginInProgress) {
       return '';
@@ -53,6 +59,7 @@ export class LoginPage extends React.Component {
   render() {
     return (
       <div className="center">
+        {this.redirectIfSomebodyIsLoggedIn()}
         <h1>Login</h1>
         <div>
           <TextField
@@ -103,17 +110,20 @@ export class LoginPage extends React.Component {
 LoginPage.propTypes = {
   loginFailure: PropTypes.bool,
   loginInProgress: PropTypes.bool,
-  onLogin: PropTypes.func.isRequired
+  onLogin: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.bool
 };
 
 LoginPage.defaultProps = {
   loginFailure: false,
-  loginInProgress: false
+  loginInProgress: false,
+  isUserLoggedIn: false
 };
 
 const mapStateToProps = state => ({
   loginFailure: state.user.uiState.loginFailure,
-  loginInProgress: state.user.uiState.loginInProgress
+  loginInProgress: state.user.uiState.loginInProgress,
+  isUserLoggedIn: state.user.data !== null
 });
 
 const mapDispatchToProps = dispatch => ({

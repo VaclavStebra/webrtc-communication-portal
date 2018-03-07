@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Redirect } from 'react-router-dom';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -8,12 +9,22 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import { LoginPage } from '../../../src/modules/user/LoginPage';
 
-const renderLoginPage = (loginFailure = false, loginInProgress = false) =>
-  shallow(<LoginPage
+const renderLoginPage = (
+  loginFailure = false,
+  loginInProgress = false,
+  isUserLoggedIn = false
+) => {
+  const props = {
+    loginFailure,
+    loginInProgress,
+    isUserLoggedIn
+  };
+
+  return shallow(<LoginPage
+    {...props}
     onLogin={() => {}}
-    loginFailure={loginFailure}
-    loginInProgress={loginInProgress}
   />);
+};
 
 function verifyLoginFields(textFields) {
   const emailField = textFields.at(0);
@@ -131,6 +142,22 @@ describe('User module', () => {
       const button = element.find(RaisedButton).at(0);
 
       expect(button.prop('disabled')).to.equal(true);
+    });
+
+    it('redirects to / when user is already logged in', () => {
+      const element = renderLoginPage(false, false, true);
+
+      const redirect = element.find(Redirect).at(0);
+
+      expect(redirect.prop('to')).to.equal('/');
+    });
+
+    it('does not redirect when nobody is logged in', () => {
+      const element = renderLoginPage();
+
+      const redirects = element.find(Redirect);
+
+      expect(redirects).to.have.length(0);
     });
   });
 });
