@@ -3,22 +3,48 @@ import * as types from '../../../../src/modules/user/constants/ActionTypes';
 
 const email = 'john.doe@email.com';
 
+const usefulUiStates = {
+  noProgressNoFail: {
+    loginInProgress: false,
+    loginFailure: false,
+    signUpFailure: false,
+    signUpInProgress: false
+  },
+  loginFailure: {
+    loginInProgress: false,
+    loginFailure: true,
+    signUpFailure: false,
+    signUpInProgress: false
+  },
+  loginInProgress: {
+    loginInProgress: true,
+    loginFailure: false,
+    signUpFailure: false,
+    signUpInProgress: false
+  },
+  signUpFailure: {
+    loginInProgress: false,
+    loginFailure: false,
+    signUpFailure: true,
+    signUpInProgress: false
+  },
+  signUpInProgress: {
+    loginInProgress: false,
+    loginFailure: false,
+    signUpFailure: false,
+    signUpInProgress: true
+  }
+};
+
 const initialState = {
   data: null,
-  uiState: {
-    loginInProgress: false,
-    loginFailure: false
-  }
+  uiState: usefulUiStates.noProgressNoFail
 };
 
 const loggedInState = {
   data: email,
-  uiState: {
-    loginInProgress: false,
-    loginFailure: false
-  }
+  uiState: usefulUiStates.noProgressNoFail
 };
-
 
 describe('User module', () => {
   describe('reducers', () => {
@@ -36,10 +62,7 @@ describe('User module', () => {
         data: {
           email
         },
-        uiState: {
-          loginInProgress: false,
-          loginFailure: false
-        }
+        uiState: usefulUiStates.noProgressNoFail
       });
     });
 
@@ -50,10 +73,7 @@ describe('User module', () => {
 
       expect(userReducer(initialState, action)).to.deep.equal({
         data: null,
-        uiState: {
-          loginInProgress: false,
-          loginFailure: true
-        }
+        uiState: usefulUiStates.loginFailure
       });
     });
 
@@ -64,10 +84,7 @@ describe('User module', () => {
 
       expect(userReducer(initialState, action)).to.deep.equal({
         data: null,
-        uiState: {
-          loginInProgress: true,
-          loginFailure: false
-        }
+        uiState: usefulUiStates.loginInProgress
       });
     });
 
@@ -78,10 +95,29 @@ describe('User module', () => {
 
       expect(userReducer(loggedInState, action)).to.deep.equal({
         data: null,
-        uiState: {
-          loginInProgress: false,
-          loginFailure: false
-        }
+        uiState: usefulUiStates.noProgressNoFail
+      });
+    });
+
+    it('handles SIGNUP_FAILURE', () => {
+      const action = {
+        type: types.SIGNUP_FAILURE
+      };
+
+      expect(userReducer(initialState, action)).to.deep.equal({
+        data: null,
+        uiState: usefulUiStates.signUpFailure
+      });
+    });
+
+    it('handles SIGNUP_START', () => {
+      const action = {
+        type: types.SIGNUP_START
+      };
+
+      expect(userReducer(initialState, action)).to.deep.equal({
+        data: null,
+        uiState: usefulUiStates.signUpInProgress
       });
     });
   });

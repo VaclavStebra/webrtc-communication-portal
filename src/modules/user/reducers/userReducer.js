@@ -4,7 +4,9 @@ const initialState = {
   data: null,
   uiState: {
     loginFailure: false,
-    loginInProgress: false
+    loginInProgress: false,
+    signUpFailure: false,
+    signUpInProgress: false
   }
 };
 
@@ -17,7 +19,9 @@ export function userReducer(state = initialState, action) {
         },
         uiState: {
           loginFailure: false,
-          loginInProgress: false
+          loginInProgress: false,
+          signUpFailure: false,
+          signUpInProgress: false
         }
       };
     case types.LOGIN_FAILURE:
@@ -25,7 +29,9 @@ export function userReducer(state = initialState, action) {
         data: null,
         uiState: {
           loginFailure: true,
-          loginInProgress: false
+          loginInProgress: false,
+          signUpFailure: false,
+          signUpInProgress: false
         }
       };
     case types.LOGIN_START:
@@ -33,7 +39,29 @@ export function userReducer(state = initialState, action) {
         data: null,
         uiState: {
           loginFailure: false,
-          loginInProgress: true
+          loginInProgress: true,
+          signUpFailure: false,
+          signUpInProgress: false
+        }
+      };
+    case types.SIGNUP_FAILURE:
+      return {
+        data: null,
+        uiState: {
+          loginFailure: false,
+          loginInProgress: false,
+          signUpFailure: true,
+          signUpInProgress: false
+        }
+      };
+    case types.SIGNUP_START:
+      return {
+        data: null,
+        uiState: {
+          loginFailure: false,
+          loginInProgress: false,
+          signUpFailure: false,
+          signUpInProgress: true
         }
       };
     case types.LOGOUT:
