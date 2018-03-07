@@ -19,6 +19,12 @@ export function loginFailure() {
   };
 }
 
+export function logout() {
+  return {
+    type: types.LOGOUT
+  };
+}
+
 export function login(email, password) {
   return (dispatch) => {
     dispatch(loginStart());

@@ -1,10 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import ApplicationBar from '../applicationBar/ApplicationBar';
+import { logout } from '../user/actions/userActions';
 
 export class Root extends React.Component {
   render() {
@@ -12,7 +14,10 @@ export class Root extends React.Component {
       <div>
         <Router>
           <div>
-            <ApplicationBar />
+            <ApplicationBar
+              isUserLoggedIn={this.props.isUserLoggedIn}
+              onLogout={this.props.onLogout}
+            />
             <div className="container">
               <div>
                 <Route
@@ -34,8 +39,24 @@ export class Root extends React.Component {
   }
 }
 
+Root.propTypes = {
+  isUserLoggedIn: PropTypes.bool,
+  onLogout: PropTypes.func
+};
+
+Root.defaultProps = {
+  isUserLoggedIn: false,
+  onLogout: () => {}
+};
+
 const mapStateToProps = state => ({
-  user: state.user.data
+  isUserLoggedIn: state.user.data !== null
 });
 
-export default connect(mapStateToProps)(Root);
+const mapDispatchToProps = dispatch => ({
+  onLogout: () => {
+    dispatch(logout());
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Root);

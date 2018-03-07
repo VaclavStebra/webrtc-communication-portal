@@ -1,6 +1,8 @@
 import { userReducer } from '../../../../src/modules/user/reducers/userReducer';
 import * as types from '../../../../src/modules/user/constants/ActionTypes';
 
+const email = 'john.doe@email.com';
+
 const initialState = {
   data: null,
   uiState: {
@@ -9,7 +11,14 @@ const initialState = {
   }
 };
 
-const email = 'john.doe@email.com';
+const loggedInState = {
+  data: email,
+  uiState: {
+    loginInProgress: false,
+    loginFailure: false
+  }
+};
+
 
 describe('User module', () => {
   describe('reducers', () => {
@@ -57,6 +66,20 @@ describe('User module', () => {
         data: null,
         uiState: {
           loginInProgress: true,
+          loginFailure: false
+        }
+      });
+    });
+
+    it('handles LOGOUT', () => {
+      const action = {
+        type: types.LOGOUT
+      };
+
+      expect(userReducer(loggedInState, action)).to.deep.equal({
+        data: null,
+        uiState: {
+          loginInProgress: false,
           loginFailure: false
         }
       });

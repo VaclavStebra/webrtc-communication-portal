@@ -36,6 +36,8 @@ export function userReducer(state = initialState, action) {
           loginInProgress: true
         }
       };
+    case types.LOGOUT:
+      return initialState;
     default:
       return state;
   }

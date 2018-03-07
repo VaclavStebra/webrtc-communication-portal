@@ -36,6 +36,14 @@ describe('User module', () => {
     expect(actions.loginStart()).to.deep.equal(expectedAction);
   });
 
+  it('creates an action for logout', () => {
+    const expectedAction = {
+      type: types.LOGOUT
+    };
+
+    expect(actions.logout()).to.deep.equal(expectedAction);
+  });
+
   it('creates LOGIN after successful login', () => {
     const email = 'john.doe@email.com';
     const password = 'password';
