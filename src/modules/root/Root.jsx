@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
-import { SignUpPage } from '../user/SignUpPage';
+import SignupPageContainer from '../user/SignUpPage';
 import ApplicationBar from '../applicationBar/ApplicationBar';
 import { logout } from '../user/actions/userActions';
 
@@ -34,7 +34,7 @@ export class Root extends React.Component {
                 <Route
                   path="/signup"
                   exact
-                  component={SignUpPage}
+                  component={SignupPageContainer}
                 />
               </div>
             </div>
@@ -52,8 +52,7 @@ Root.propTypes = {
 
 Root.defaultProps = {
   isUserLoggedIn: false,
-  onLogout: () => {
-  }
+  onLogout: () => {}
 };
 
 const mapStateToProps = state => ({
