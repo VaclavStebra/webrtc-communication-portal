@@ -38,4 +38,19 @@ describe('ApplicationBar', () => {
       'AppBar Login link points to wrong location'
     );
   });
+
+  it('has IconMenu on right side when user is logged in', () => {
+    const element = shallow(<ApplicationBar isUserLoggedIn />);
+
+    const appBar = element.find(AppBar).at(0);
+    const rightIcon = appBar.prop('iconElementRight');
+
+    expect(rightIcon).to.have.property('type');
+    expect(rightIcon.type.name).to.equal(
+      'IconMenu',
+      'AppBar does not have IconMenu when user is logged in'
+    );
+    expect(rightIcon.props.children.type.name).to.equal('MenuItem');
+    expect(rightIcon.props.children.props.primaryText).to.equal('Sign out');
+  });
 });

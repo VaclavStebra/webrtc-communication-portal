@@ -1,12 +1,30 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Redirect } from 'react-router-dom';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import { LoginPage } from '../../../src/modules/user/LoginPage';
 
-const renderLoginPage = () => shallow(<LoginPage onLogin={() => {}} />);
+const renderLoginPage = (
+  loginFailure = false,
+  loginInProgress = false,
+  isUserLoggedIn = false
+) => {
+  const props = {
+    loginFailure,
+    loginInProgress,
+    isUserLoggedIn
+  };
+
+  return shallow(<LoginPage
+    {...props}
+    onLogin={() => {}}
+  />);
+};
 
 function verifyLoginFields(textFields) {
   const emailField = textFields.at(0);
@@ -31,55 +49,115 @@ function verifyLoginFields(textFields) {
   expect(passwordField.prop('type')).to.equal('password', 'Password field has invalid type');
 }
 
-describe('LoginPage', () => {
-  it('has heading Login', () => {
-    const element = renderLoginPage();
+describe('User module', () => {
+  describe('LoginPage', () => {
+    it('has heading Login', () => {
+      const element = renderLoginPage();
 
-    const heading = element.find('h1').at(0);
+      const heading = element.find('h1').at(0);
 
-    expect(heading.text()).to.equal('Login', 'Login page has wrong heading');
-  });
+      expect(heading.text()).to.equal('Login', 'Login page has wrong heading');
+    });
 
-  it('has fields for email and password', () => {
-    const element = renderLoginPage();
+    it('has fields for email and password', () => {
+      const element = renderLoginPage();
 
-    const textFields = element.find(TextField);
+      const textFields = element.find(TextField);
 
-    expect(textFields).to.have.length(2, 'Incorrect number of TextFields on login page');
-    verifyLoginFields(textFields);
-  });
+      expect(textFields).to.have.length(2, 'Incorrect number of TextFields on login page');
+      verifyLoginFields(textFields);
+    });
 
-  it('has Log in button', () => {
-    const element = renderLoginPage();
+    it('has Log in button', () => {
+      const element = renderLoginPage();
 
-    const button = element.find(RaisedButton).at(0);
+      const button = element.find(RaisedButton).at(0);
 
-    expect(button.prop('label')).to.equal('Log in', 'Log in button not present or invalid label');
-    expect(button.prop('primary')).to.equal(true, 'Log in button is not primary');
-  });
+      expect(button.prop('label')).to.equal('Log in', 'Log in button not present or invalid label');
+      expect(button.prop('primary')).to.equal(true, 'Log in button is not primary');
+    });
 
-  it('has Sign up button', () => {
-    const element = renderLoginPage();
+    it('has Sign up button', () => {
+      const element = renderLoginPage();
 
-    const button = element.find(RaisedButton).at(1);
+      const button = element.find(RaisedButton).at(1);
 
-    expect(button.prop('label')).to.equal('Sign up', 'Sign up button not present or invalid label');
-    expect(button.prop('secondary')).to.equal(true, 'Sign up button is not secondary');
-  });
+      expect(button.prop('label')).to.equal('Sign up', 'Sign up button not present or invalid label');
+      expect(button.prop('secondary')).to.equal(true, 'Sign up button is not secondary');
+    });
 
-  it('has Back button', () => {
-    const element = renderLoginPage();
+    it('has Back button', () => {
+      const element = renderLoginPage();
 
-    const button = element.find(RaisedButton).at(2);
+      const button = element.find(RaisedButton).at(2);
 
-    expect(button.prop('label')).to.equal('Back', 'Back button not present or invalid label');
-    expect(button.prop('containerElement').type.name).to.equal(
-      'Link',
-      'Back button is not link'
-    );
-    expect(button.prop('containerElement').props.to).to.equal(
-      '/',
-      'Back link points to wrong location'
-    );
+      expect(button.prop('label')).to.equal('Back', 'Back button not present or invalid label');
+      expect(button.prop('containerElement').type.name).to.equal(
+        'Link',
+        'Back button is not link'
+      );
+      expect(button.prop('containerElement').props.to).to.equal(
+        '/',
+        'Back link points to wrong location'
+      );
+    });
+
+    it('has closed Snackbar for invalid login info', () => {
+      const element = renderLoginPage();
+
+      const snackbar = element.find(Snackbar).at(0);
+
+      expect(snackbar.prop('message')).to.equal('Invalid email or password');
+      expect(snackbar.prop('open')).to.equal(false);
+    });
+
+    it('has opened Snackbar for invalid login info when loginFailure is set', () => {
+      const element = renderLoginPage(true);
+
+      const snackbar = element.find(Snackbar).at(0);
+
+      expect(snackbar.prop('message')).to.equal('Invalid email or password');
+      expect(snackbar.prop('open')).to.equal(true);
+    });
+
+    it('has CircularProgress when login is in progress', () => {
+      const element = renderLoginPage(true, true);
+
+      const circularProgresses = element.find(CircularProgress);
+
+      expect(circularProgresses).to.have.length(1);
+    });
+
+    it('does not have CircularProgress when login is not in progress', () => {
+      const element = renderLoginPage(true, false);
+
+      const circularProgresses = element.find(CircularProgress);
+
+      expect(circularProgresses).to.have.length(0);
+    });
+
+    it('has disabled login button when login is in progress', () => {
+      const element = renderLoginPage(true, true);
+
+      const button = element.find(RaisedButton).at(0);
+
+      expect(button.prop('disabled')).to.equal(true);
+    });
+
+    it('redirects to / when user is already logged in', () => {
+      const element = renderLoginPage(false, false, true);
+
+      const redirect = element.find(Redirect).at(0);
+
+      expect(redirect.prop('to')).to.equal('/');
+    });
+
+    it('does not redirect when nobody is logged in', () => {
+      const element = renderLoginPage();
+
+      const redirects = element.find(Redirect);
+
+      expect(redirects).to.have.length(0);
+    });
   });
 });
