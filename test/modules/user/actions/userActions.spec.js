@@ -18,63 +18,113 @@ describe('User module', () => {
 
       expect(actions.loginSuccess(email)).to.deep.equal(expectedAction);
     });
-  });
 
-  it('creates an action for login failure', () => {
-    const expectedAction = {
-      type: types.LOGIN_FAILURE
-    };
+    it('creates an action for login failure', () => {
+      const expectedAction = {
+        type: types.LOGIN_FAILURE
+      };
 
-    expect(actions.loginFailure()).to.deep.equal(expectedAction);
-  });
+      expect(actions.loginFailure()).to.deep.equal(expectedAction);
+    });
 
-  it('creates an action for login start', () => {
-    const expectedAction = {
-      type: types.LOGIN_START
-    };
+    it('creates an action for login start', () => {
+      const expectedAction = {
+        type: types.LOGIN_START
+      };
 
-    expect(actions.loginStart()).to.deep.equal(expectedAction);
-  });
+      expect(actions.loginStart()).to.deep.equal(expectedAction);
+    });
 
-  it('creates an action for logout', () => {
-    const expectedAction = {
-      type: types.LOGOUT
-    };
+    it('creates an action for logout', () => {
+      const expectedAction = {
+        type: types.LOGOUT
+      };
 
-    expect(actions.logout()).to.deep.equal(expectedAction);
-  });
+      expect(actions.logout()).to.deep.equal(expectedAction);
+    });
 
-  it('creates LOGIN after successful login', () => {
-    const email = 'john.doe@email.com';
-    const password = 'password';
+    it('creates LOGIN after successful login', () => {
+      const email = 'john.doe@email.com';
+      const password = 'password';
 
-    const expectedActions = [
-      { type: types.LOGIN_START },
-      { type: types.LOGIN_SUCCESS, email }
-    ];
+      const expectedActions = [
+        { type: types.LOGIN_START },
+        { type: types.LOGIN_SUCCESS, email }
+      ];
 
-    const store = mockStore({});
+      const store = mockStore({});
 
-    return store.dispatch(actions.login(email, password))
-      .then(() => {
-        expect(store.getActions()).to.deep.equal(expectedActions);
-      });
-  });
+      return store.dispatch(actions.login(email, password))
+        .then(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions);
+        });
+    });
 
-  it('creates LOGIN_FAILURE after unsuccessful login', () => {
-    const email = 'john.doe@email.com';
-    const password = 'wrongpassword';
+    it('creates LOGIN_FAILURE after unsuccessful login', () => {
+      const email = 'john.doe@email.com';
+      const password = 'wrongpassword';
 
-    const expectedActions = [
-      { type: types.LOGIN_START },
-      { type: types.LOGIN_FAILURE }
-    ];
+      const expectedActions = [
+        { type: types.LOGIN_START },
+        { type: types.LOGIN_FAILURE }
+      ];
 
-    const store = mockStore({});
+      const store = mockStore({});
 
-    return store.dispatch(actions.login(email, password))
-      .then(() => {
-        expect(store.getActions()).to.deep.equal(expectedActions);
-      });
+      return store.dispatch(actions.login(email, password))
+        .then(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions);
+        });
+    });
+
+    it('creates an action for signup failure', () => {
+      const expectedAction = {
+        type: types.SIGNUP_FAILURE
+      };
+
+      expect(actions.signupFailure()).to.deep.equal(expectedAction);
+    });
+
+    it('creates an action for signup start', () => {
+      const expectedAction = {
+        type: types.SIGNUP_START
+      };
+
+      expect(actions.signupStart()).to.deep.equal(expectedAction);
+    });
+
+    it('creates LOGIN after successful signup', () => {
+      const email = 'john.doe@email.com';
+      const password = 'password';
+
+      const expectedActions = [
+        { type: types.SIGNUP_START },
+        { type: types.LOGIN_SUCCESS, email }
+      ];
+
+      const store = mockStore({});
+
+      return store.dispatch(actions.signup(email, password))
+        .then(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions);
+        });
+    });
+
+    it('creates SIGNUP_FAILURE after unsuccessful signup', () => {
+      const email = 'john.doe@email.com';
+      const password = 'wrongpassword';
+
+      const expectedActions = [
+        { type: types.SIGNUP_START },
+        { type: types.SIGNUP_FAILURE }
+      ];
+
+      const store = mockStore({});
+
+      return store.dispatch(actions.signup(email, password))
+        .then(() => {
+          expect(store.getActions()).to.deep.equal(expectedActions);
+        });
+    });
   });
 });

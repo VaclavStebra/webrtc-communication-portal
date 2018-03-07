@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
+import SignupPageContainer from '../user/SignUpPage';
 import ApplicationBar from '../applicationBar/ApplicationBar';
 import { logout } from '../user/actions/userActions';
 
@@ -29,6 +30,11 @@ export class Root extends React.Component {
                   path="/login"
                   exact
                   component={LoginPageContainer}
+                />
+                <Route
+                  path="/signup"
+                  exact
+                  component={SignupPageContainer}
                 />
               </div>
             </div>

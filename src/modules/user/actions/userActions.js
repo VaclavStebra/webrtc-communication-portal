@@ -19,6 +19,18 @@ export function loginFailure() {
   };
 }
 
+export function signupFailure() {
+  return {
+    type: types.SIGNUP_FAILURE
+  };
+}
+
+export function signupStart() {
+  return {
+    type: types.SIGNUP_START
+  };
+}
+
 export function logout() {
   return {
     type: types.LOGOUT
@@ -41,6 +53,26 @@ export function login(email, password) {
       })
       .catch(() => {
         dispatch(loginFailure());
+      });
+  };
+}
+
+export function signup(email, password) {
+  return (dispatch) => {
+    dispatch(signupStart());
+    // TODO api call here
+    const promise = new Promise((resolve, reject) => {
+      const functionToCall = (password === 'password') ? resolve : reject;
+
+      setTimeout(functionToCall, 1000);
+    });
+
+    return promise
+      .then(() => {
+        dispatch(loginSuccess(email));
+      })
+      .catch(() => {
+        dispatch(signupFailure());
       });
   };
 }

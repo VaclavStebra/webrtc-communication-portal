@@ -7,9 +7,9 @@ import Snackbar from 'material-ui/Snackbar';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import UserForm from './components/UserForm';
-import { login } from './actions/userActions';
+import { signup } from './actions/userActions';
 
-export class LoginPage extends React.Component {
+export class SignUpPage extends React.Component {
   redirectIfSomebodyIsLoggedIn() {
     return this.props.isUserLoggedIn ? (
       <Redirect to="/" />
@@ -17,7 +17,7 @@ export class LoginPage extends React.Component {
   }
 
   renderCircularProgress() {
-    if (!this.props.loginInProgress) {
+    if (!this.props.signupInProgress) {
       return '';
     }
 
@@ -32,49 +32,48 @@ export class LoginPage extends React.Component {
     return (
       <div className="center">
         {this.redirectIfSomebodyIsLoggedIn()}
-        <h1>Login</h1>
+        <h1>Sign Up</h1>
         <div>
           <UserForm
-            submitText="Log in"
-            linkText="Sign up"
-            linkHref="/signup"
-            actionInProgress={this.props.loginInProgress}
-            onSubmit={this.props.onLogin}
+            submitText="Sign up"
+            linkText="Log in"
+            linkHref="/login"
+            onSubmit={this.props.onSignup}
           />
           {this.renderCircularProgress()}
         </div>
         <Snackbar
-          message="Invalid email or password"
-          open={this.props.loginFailure}
+          message="Something went wrong"
+          open={this.props.signupFailure}
         />
       </div>
     );
   }
 }
 
-LoginPage.propTypes = {
-  loginFailure: PropTypes.bool,
-  loginInProgress: PropTypes.bool,
-  onLogin: PropTypes.func.isRequired,
+SignUpPage.propTypes = {
+  signupFailure: PropTypes.bool,
+  signupInProgress: PropTypes.bool,
+  onSignup: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool
 };
 
-LoginPage.defaultProps = {
-  loginFailure: false,
-  loginInProgress: false,
+SignUpPage.defaultProps = {
+  signupFailure: false,
+  signupInProgress: false,
   isUserLoggedIn: false
 };
 
 const mapStateToProps = state => ({
-  loginFailure: state.user.uiState.loginFailure,
-  loginInProgress: state.user.uiState.loginInProgress,
+  signupFailure: state.user.uiState.signUpFailure,
+  signupInProgress: state.user.uiState.signUpInProgress,
   isUserLoggedIn: state.user.data !== null
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: (email, password) => {
-    dispatch(login(email, password));
+  onSignup: (email, password) => {
+    dispatch(signup(email, password));
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage);
