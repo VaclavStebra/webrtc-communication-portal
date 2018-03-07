@@ -1,43 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import UserForm from './components/UserForm';
 import { login } from './actions/userActions';
 
 export class LoginPage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email: '',
-      password: ''
-    };
-
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleEmailChange(event, email) {
-    this.setState({ email });
-  }
-
-  handlePasswordChange(event, password) {
-    this.setState({ password });
-  }
-
-  handleSubmit() {
-    const { email, password } = this.state;
-
-    this.props.onLogin(email, password);
-  }
-
   redirectIfSomebodyIsLoggedIn() {
     return this.props.isUserLoggedIn ? (
       <Redirect to="/" />
@@ -62,40 +34,13 @@ export class LoginPage extends React.Component {
         {this.redirectIfSomebodyIsLoggedIn()}
         <h1>Login</h1>
         <div>
-          <TextField
-            hintText="Please enter your email address"
-            floatingLabelText="Email"
-            value={this.state.email}
-            onChange={this.handleEmailChange}
+          <UserForm
+            submitText="Log in"
+            linkText="Sign up"
+            linkHref="/signup"
+            actionInProgress={this.props.loginInProgress}
+            onSubmit={this.props.onLogin}
           />
-          <br />
-          <TextField
-            hintText="Please enter your password"
-            floatingLabelText="Password"
-            type="password"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
-          <br />
-          <div className="top-separator">
-            <RaisedButton
-              label="Log in"
-              primary
-              onClick={this.handleSubmit}
-              disabled={this.props.loginInProgress}
-            />
-            &nbsp;
-            <RaisedButton
-              label="Sign up"
-              secondary
-            />
-          </div>
-          <div className="top-separator">
-            <RaisedButton
-              label="Back"
-              containerElement={<Link to="/" />}
-            />
-          </div>
           {this.renderCircularProgress()}
         </div>
         <Snackbar
