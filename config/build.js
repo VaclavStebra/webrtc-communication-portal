@@ -5,7 +5,8 @@ const BABEL_CONFIG = {
     ['env', { modules: false }]
   ],
   plugins: [
-    'external-helpers'
+    'external-helpers',
+    'transform-object-rest-spread'
   ],
   babelrc: false
 };
