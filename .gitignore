@@ -1,6 +1,5 @@
 # Custom stuff
 .idea
-webrtc-communication-portal.iml
 dist/
 
 # Genertated below
