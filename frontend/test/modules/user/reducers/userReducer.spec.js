@@ -120,5 +120,27 @@ describe('User module', () => {
         uiState: usefulUiStates.signUpInProgress
       });
     });
+
+    it('handles LOGIN_UI_RESET', () => {
+      const action = {
+        type: types.LOGIN_UI_RESET
+      };
+
+      const state = { ...initialState };
+      state.uiState = usefulUiStates.loginFailure;
+
+      expect(userReducer(state, action)).to.deep.equal(initialState);
+    });
+
+    it('handles SIGNUP_UI_RESET', () => {
+      const action = {
+        type: types.SIGNUP_UI_RESET
+      };
+
+      const state = { ...initialState };
+      state.uiState = usefulUiStates.signUpFailure;
+
+      expect(userReducer(state, action)).to.deep.equal(initialState);
+    });
   });
 });

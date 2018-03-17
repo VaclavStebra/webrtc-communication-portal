@@ -1,4 +1,19 @@
+import 'cross-fetch/polyfill';
+
+import { API_URL } from '../../../../config/config';
 import * as types from '../constants/ActionTypes';
+
+export function loginUIReset() {
+  return {
+    type: types.LOGIN_UI_RESET
+  };
+}
+
+export function signupUIReset() {
+  return {
+    type: types.SIGNUP_UI_RESET
+  };
+}
 
 export function loginStart() {
   return {
@@ -6,10 +21,10 @@ export function loginStart() {
   };
 }
 
-export function loginSuccess(email) {
+export function loginSuccess(token) {
   return {
     type: types.LOGIN_SUCCESS,
-    email
+    token
   };
 }
 
@@ -40,43 +55,45 @@ export function logout() {
 export function login(email, password) {
   return (dispatch) => {
     dispatch(loginStart());
-    // TODO api call here
-    const promise = new Promise((resolve, reject) => {
-      const functionToCall = (password === 'password') ? resolve : reject;
 
-      setTimeout(functionToCall, 1000);
-    });
-
-    return promise
-      .then(() => {
-        dispatch(loginSuccess(email));
+    return fetch(`${API_URL}/users/token`, {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
       })
-      .catch(() => {
-        dispatch(loginFailure());
-      });
+    })
+      .then(res => res.json())
+      .then((body) => {
+        if (body.error || !body.token) {
+          dispatch(loginFailure());
+        } else {
+          dispatch(loginSuccess(body.token));
+        }
+      })
+      .catch(() => dispatch(loginFailure()));
   };
 }
 
 export function signup(email, password) {
   return (dispatch) => {
     dispatch(signupStart());
-    // TODO api call here
-    const promise = new Promise((resolve, reject) => {
-      const functionToCall = (password === 'password') ? resolve : reject;
 
-      setTimeout(functionToCall, 1000);
-    });
-
-    return promise
-      .then(() => {
-        dispatch(loginSuccess(email));
+    return fetch(`${API_URL}/users/signup`, {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
       })
-      .catch(() => {
-        dispatch(signupFailure());
-      });
+    })
+      .then(res => res.json())
+      .then((body) => {
+        if (body.error) {
+          dispatch(signupFailure());
+        } else {
+          dispatch(loginSuccess(body.token));
+        }
+      })
+      .catch(() => dispatch(signupFailure()));
   };
 }
-
-export default {
-  login
-};
