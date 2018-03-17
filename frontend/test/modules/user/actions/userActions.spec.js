@@ -256,5 +256,21 @@ describe('User module', () => {
           expect(store.getActions()).to.deep.equal(expectedActions);
         });
     });
+
+    it('creates an action for login ui reset', () => {
+      const expectedAction = {
+        type: types.LOGIN_UI_RESET
+      };
+
+      expect(actions.loginUIReset()).to.deep.equal(expectedAction);
+    });
+
+    it('creates an action for sign up ui reset', () => {
+      const expectedAction = {
+        type: types.SIGNUP_UI_RESET
+      };
+
+      expect(actions.signupUIReset()).to.deep.equal(expectedAction);
+    });
   });
 });

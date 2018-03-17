@@ -13,6 +13,7 @@ const initialState = {
 };
 
 export function userReducer(state = initialState, action) {
+  const newUIState = { ...state.uiState };
   const uiState = { ...initialUiState };
 
   switch (action.type) {
@@ -53,6 +54,22 @@ export function userReducer(state = initialState, action) {
       };
     case types.LOGOUT:
       return initialState;
+    case types.LOGIN_UI_RESET:
+      newUIState.loginInProgress = false;
+      newUIState.loginFailure = false;
+
+      return {
+        data: state.data,
+        uiState: newUIState
+      };
+    case types.SIGNUP_UI_RESET:
+      newUIState.signUpInProgress = false;
+      newUIState.signUpFailure = false;
+
+      return {
+        data: state.data,
+        uiState: newUIState
+      };
     default:
       return state;
   }

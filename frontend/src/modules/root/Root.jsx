@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import SignupPageContainer from '../user/SignUpPage';
 import ApplicationBar from '../applicationBar/ApplicationBar';
-import { logout } from '../user/actions/userActions';
+import {loginUIReset, logout, signupUIReset} from '../user/actions/userActions';
 
 export class Root extends React.Component {
   render() {
@@ -29,12 +29,26 @@ export class Root extends React.Component {
                 <Route
                   path="/login"
                   exact
-                  component={LoginPageContainer}
+                  render={() => {
+                    if (this.props.isUserLoggedIn) {
+                      return <Redirect to="/" />;
+                    } else {
+                      this.props.loginUIReset();
+                      return <LoginPageContainer />;
+                    }
+                  }}
                 />
                 <Route
                   path="/signup"
                   exact
-                  component={SignupPageContainer}
+                  render={() => {
+                    if (this.props.isUserLoggedIn) {
+                      return <Redirect to="/" />;
+                    } else {
+                      this.props.signupUIReset();
+                      return <SignupPageContainer />;
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -47,12 +61,16 @@ export class Root extends React.Component {
 
 Root.propTypes = {
   isUserLoggedIn: PropTypes.bool,
-  onLogout: PropTypes.func
+  onLogout: PropTypes.func,
+  loginUIReset: PropTypes.func,
+  signupUIReset: PropTypes.func
 };
 
 Root.defaultProps = {
   isUserLoggedIn: false,
-  onLogout: () => {}
+  onLogout: () => {},
+  loginUIReset: () => {},
+  signupUIReset: () => {}
 };
 
 const mapStateToProps = state => ({
@@ -62,6 +80,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onLogout: () => {
     dispatch(logout());
+  },
+  loginUIReset: () => {
+    dispatch(loginUIReset());
+  },
+  signupUIReset: () => {
+    dispatch(signupUIReset());
   }
 });
 

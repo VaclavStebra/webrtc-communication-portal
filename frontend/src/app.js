@@ -8,8 +8,14 @@ import getTheme from './utils/theme';
 import RootContainer from './modules/root/Root';
 
 import configureStore from './stores/configureStore';
+import { loginSuccess } from './modules/user/actions/userActions';
 
 const store = configureStore();
+
+const token = sessionStorage.getItem('token');
+if (token) {
+  store.dispatch(loginSuccess(token));
+}
 
 const App = () => (
   <MuiThemeProvider muiTheme={getTheme()}>

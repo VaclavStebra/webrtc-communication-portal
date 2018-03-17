@@ -3,6 +3,18 @@ import 'cross-fetch/polyfill';
 import { API_URL } from '../../../../config/config';
 import * as types from '../constants/ActionTypes';
 
+export function loginUIReset() {
+  return {
+    type: types.LOGIN_UI_RESET
+  };
+}
+
+export function signupUIReset() {
+  return {
+    type: types.SIGNUP_UI_RESET
+  };
+}
+
 export function loginStart() {
   return {
     type: types.LOGIN_START
@@ -35,6 +47,7 @@ export function signupStart() {
 }
 
 export function logout() {
+  sessionStorage.removeItem('token');
   return {
     type: types.LOGOUT
   };
@@ -53,10 +66,11 @@ export function login(email, password) {
     })
       .then(res => res.json())
       .then((body) => {
-        if (body.error) {
+        if (body.error || !body.token) {
           dispatch(loginFailure());
         } else {
           dispatch(loginSuccess(body.token));
+          sessionStorage.setItem('token', body.token);
         }
       })
       .catch(() => dispatch(loginFailure()));

@@ -4,8 +4,8 @@ const router = express.Router();
 const UserManager = require('../modules/user/UserManager');
 const TokenManager = require('../modules/user/TokenManager');
 
-router.get('/token', function(req, res) {
-  const { email, password } = req.query;
+router.post('/token', function(req, res) {
+  const { email, password } = req.body;
 
   const userManager = new UserManager();
   const user = userManager.getUser(email, password);

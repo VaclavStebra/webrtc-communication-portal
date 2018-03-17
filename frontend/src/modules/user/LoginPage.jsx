@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Snackbar from 'material-ui/Snackbar';
@@ -10,12 +9,6 @@ import UserForm from './components/UserForm';
 import { login } from './actions/userActions';
 
 export class LoginPage extends React.Component {
-  redirectIfSomebodyIsLoggedIn() {
-    return this.props.isUserLoggedIn ? (
-      <Redirect to="/" />
-    ) : '';
-  }
-
   renderCircularProgress() {
     if (!this.props.loginInProgress) {
       return '';
@@ -31,7 +24,6 @@ export class LoginPage extends React.Component {
   render() {
     return (
       <div className="center">
-        {this.redirectIfSomebodyIsLoggedIn()}
         <h1>Login</h1>
         <div>
           <UserForm
@@ -55,20 +47,17 @@ export class LoginPage extends React.Component {
 LoginPage.propTypes = {
   loginFailure: PropTypes.bool,
   loginInProgress: PropTypes.bool,
-  onLogin: PropTypes.func.isRequired,
-  isUserLoggedIn: PropTypes.bool
+  onLogin: PropTypes.func.isRequired
 };
 
 LoginPage.defaultProps = {
   loginFailure: false,
-  loginInProgress: false,
-  isUserLoggedIn: false
+  loginInProgress: false
 };
 
 const mapStateToProps = state => ({
   loginFailure: state.user.uiState.loginFailure,
-  loginInProgress: state.user.uiState.loginInProgress,
-  isUserLoggedIn: state.user.data !== null
+  loginInProgress: state.user.uiState.loginInProgress
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -80,14 +80,6 @@ describe('User module', () => {
       expect(circularProgresses).to.have.length(0);
     });
 
-    it('redirects to / when user is already logged in', () => {
-      const element = renderLoginPage(false, false, true);
-
-      const redirect = element.find(Redirect).at(0);
-
-      expect(redirect.prop('to')).to.equal('/');
-    });
-
     it('does not redirect when nobody is logged in', () => {
       const element = renderLoginPage();
 
