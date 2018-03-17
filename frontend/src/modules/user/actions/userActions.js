@@ -47,7 +47,6 @@ export function signupStart() {
 }
 
 export function logout() {
-  sessionStorage.removeItem('token');
   return {
     type: types.LOGOUT
   };
@@ -70,7 +69,6 @@ export function login(email, password) {
           dispatch(loginFailure());
         } else {
           dispatch(loginSuccess(body.token));
-          sessionStorage.setItem('token', body.token);
         }
       })
       .catch(() => dispatch(loginFailure()));
@@ -84,7 +82,7 @@ export function signup(email, password) {
     return fetch(`${API_URL}/users/signup`, {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-      heaedrs: new Headers({
+      headers: new Headers({
         'Content-Type': 'application/json'
       })
     })
