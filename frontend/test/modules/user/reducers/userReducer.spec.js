@@ -126,7 +126,7 @@ describe('User module', () => {
         type: types.LOGIN_UI_RESET
       };
 
-      let state = {...initialState};
+      const state = { ...initialState };
       state.uiState = usefulUiStates.loginFailure;
 
       expect(userReducer(state, action)).to.deep.equal(initialState);
@@ -137,7 +137,7 @@ describe('User module', () => {
         type: types.SIGNUP_UI_RESET
       };
 
-      let state = {...initialState};
+      const state = { ...initialState };
       state.uiState = usefulUiStates.signUpFailure;
 
       expect(userReducer(state, action)).to.deep.equal(initialState);

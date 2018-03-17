@@ -7,7 +7,7 @@ import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import SignupPageContainer from '../user/SignUpPage';
 import ApplicationBar from '../applicationBar/ApplicationBar';
-import {loginUIReset, logout, signupUIReset} from '../user/actions/userActions';
+import { loginUIReset, logout, signupUIReset } from '../user/actions/userActions';
 
 export class Root extends React.Component {
   render() {
@@ -32,10 +32,9 @@ export class Root extends React.Component {
                   render={() => {
                     if (this.props.isUserLoggedIn) {
                       return <Redirect to="/" />;
-                    } else {
-                      this.props.loginUIReset();
-                      return <LoginPageContainer />;
                     }
+                    this.props.loginUIReset();
+                    return <LoginPageContainer />;
                   }}
                 />
                 <Route
@@ -44,10 +43,9 @@ export class Root extends React.Component {
                   render={() => {
                     if (this.props.isUserLoggedIn) {
                       return <Redirect to="/" />;
-                    } else {
-                      this.props.signupUIReset();
-                      return <SignupPageContainer />;
                     }
+                    this.props.signupUIReset();
+                    return <SignupPageContainer />;
                   }}
                 />
               </div>
