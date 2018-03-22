@@ -7,7 +7,9 @@ const initialState = {
   },
   uiState: {
     fetchInProgress: false,
-    fetchFailure: false
+    fetchFailure: false,
+    createInProgress: false,
+    createFailure: false
   }
 };
 
@@ -17,7 +19,9 @@ const fetchInProgressState = {
   },
   uiState: {
     fetchInProgress: true,
-    fetchFailure: false
+    fetchFailure: false,
+    createInProgress: false,
+    createFailure: false
   }
 };
 
@@ -38,7 +42,9 @@ describe('Meeting module', () => {
         },
         uiState: {
           fetchInProgress: true,
-          fetchFailure: false
+          fetchFailure: false,
+          createInProgress: false,
+          createFailure: false
         }
       });
     });
@@ -54,7 +60,9 @@ describe('Meeting module', () => {
         },
         uiState: {
           fetchInProgress: false,
-          fetchFailure: true
+          fetchFailure: true,
+          createInProgress: false,
+          createFailure: false
         }
       });
     });
@@ -77,7 +85,63 @@ describe('Meeting module', () => {
         },
         uiState: {
           fetchInProgress: false,
-          fetchFailure: false
+          fetchFailure: false,
+          createInProgress: false,
+          createFailure: false
+        }
+      });
+    });
+
+    it('handles MEETING_CREATE_START', () => {
+      const action = {
+        type: types.MEETING_CREATE_START
+      };
+
+      expect(meetingReducer(initialState, action)).to.deep.equal({
+        data: {
+          meetings: []
+        },
+        uiState: {
+          fetchInProgress: false,
+          fetchFailure: false,
+          createInProgress: true,
+          createFailure: false
+        }
+      });
+    });
+
+    it('handles MEETING_CREATE_FAILURE', () => {
+      const action = {
+        type: types.MEETING_CREATE_FAILURE
+      };
+
+      expect(meetingReducer(initialState, action)).to.deep.equal({
+        data: {
+          meetings: []
+        },
+        uiState: {
+          fetchInProgress: false,
+          fetchFailure: false,
+          createInProgress: false,
+          createFailure: true
+        }
+      });
+    });
+
+    it('handles MEETING_CREATE_SUCCESS', () => {
+      const action = {
+        type: types.MEETING_CREATE_SUCCESS
+      };
+
+      expect(meetingReducer(initialState, action)).to.deep.equal({
+        data: {
+          meetings: []
+        },
+        uiState: {
+          fetchInProgress: false,
+          fetchFailure: false,
+          createInProgress: false,
+          createFailure: false
         }
       });
     });

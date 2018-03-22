@@ -47,6 +47,44 @@ function mockGetMeetingsWrongCredentials() {
     );
 }
 
+function mockPostCreateMeeting() {
+  fetchMock
+    .postOnce(
+      `${API_URL}/meetings/create`,
+      {
+        body: {
+          description: 'desc'
+        },
+        headers: {
+          'content-type': 'application/json'
+        }
+      }
+    );
+}
+
+function mockPostCreateMeetingFailure() {
+  fetchMock
+    .postOnce(
+      `${API_URL}/meetings/create`,
+      {
+        body: {
+          error: 'Invalid credentials'
+        },
+        headers: {
+          'content-type': 'application/json'
+        }
+      }
+    );
+}
+
+function mockPostCreateMeetingsServerFailure() {
+  fetchMock
+    .postOnce(
+      `${API_URL}/meetings/create`,
+      500
+    );
+}
+
 describe('Meeting module', () => {
   afterEach(() => {
     fetchMock.reset();
@@ -123,6 +161,80 @@ describe('Meeting module', () => {
         const store = mockStore({});
 
         return store.dispatch(actions.fetchMeetings())
+          .then(() => {
+            expect(store.getActions()).to.deep.equal(expectedActions);
+          });
+      });
+    });
+
+    describe('Meeting creation', () => {
+      it('creates an action for meeting create start', () => {
+        const expectedAction = {
+          type: types.MEETING_CREATE_START
+        };
+
+        expect(actions.meetingCreateStart()).to.deep.equal(expectedAction);
+      });
+
+      it('creates an action for meeting create failure', () => {
+        const expectedAction = {
+          type: types.MEETING_CREATE_FAILURE
+        };
+
+        expect(actions.meetingCreateFailure()).to.deep.equal(expectedAction);
+      });
+
+      it('creates an action for meeting create success', () => {
+        const expectedAction = {
+          type: types.MEETING_CREATE_SUCCESS
+        };
+
+        expect(actions.meetingCreateSuccess()).to.deep.equal(expectedAction);
+      });
+
+      it('creates MEETING_CREATE_SUCCESS after successful fetch', () => {
+        mockPostCreateMeeting();
+
+        const expectedActions = [
+          { type: types.MEETING_CREATE_START },
+          { type: types.MEETING_CREATE_SUCCESS }
+        ];
+
+        const store = mockStore({});
+
+        return store.dispatch(actions.createMeeting({}))
+          .then(() => {
+            expect(store.getActions()).to.deep.equal(expectedActions);
+          });
+      });
+
+      it('creates MEETING_CREATE_FAILURE after meeting creation failure', () => {
+        mockPostCreateMeetingFailure();
+
+        const expectedActions = [
+          { type: types.MEETING_CREATE_START },
+          { type: types.MEETING_CREATE_FAILURE }
+        ];
+
+        const store = mockStore({});
+
+        return store.dispatch(actions.createMeeting({}))
+          .then(() => {
+            expect(store.getActions()).to.deep.equal(expectedActions);
+          });
+      });
+
+      it('creates MEETING_CREATE_FAILURE after meeting creation failure due to server error', () => {
+        mockPostCreateMeetingsServerFailure();
+
+        const expectedActions = [
+          { type: types.MEETING_CREATE_START },
+          { type: types.MEETING_CREATE_FAILURE }
+        ];
+
+        const store = mockStore({});
+
+        return store.dispatch(actions.createMeeting({}))
           .then(() => {
             expect(store.getActions()).to.deep.equal(expectedActions);
           });
