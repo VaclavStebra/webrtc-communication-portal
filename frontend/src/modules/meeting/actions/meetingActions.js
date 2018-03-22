@@ -1,7 +1,8 @@
 import 'cross-fetch/polyfill';
 
-import { API_URL } from '../../../../config/config';
 import * as types from '../constants/ActionTypes';
+
+import { get, post } from '../../../utils/fetchHelpers';
 
 export function meetingsFetchStart() {
   return {
@@ -44,13 +45,7 @@ export function fetchMeetings() {
   return (dispatch) => {
     dispatch(meetingsFetchStart());
 
-    return fetch(`${API_URL}/meetings`, {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    })
-      .then(res => res.json())
+    return get('/meetings')
       .then((body) => {
         if (body.error) {
           dispatch(meetingsFetchFailure());
@@ -70,16 +65,9 @@ export function createMeeting(meetingParams) {
   return (dispatch) => {
     dispatch(meetingCreateStart());
 
-    return fetch(`${API_URL}/meetings/create`, {
-      method: 'POST',
-      body: JSON.stringify({
-        title, startDate, endDate, participants
-      }),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
+    return post('/meetings/create', {
+      title, startDate, endDate, participants
     })
-      .then(res => res.json())
       .then((body) => {
         if (body.error) {
           dispatch(meetingCreateFailure());

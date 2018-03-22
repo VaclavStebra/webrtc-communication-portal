@@ -13,86 +13,81 @@ const initialState = {
 };
 
 function handleFetchStart(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.fetchInProgress = true;
+  uiState.fetchFailure = false;
+
   return {
-    data: {
-      meetings: state.data.meetings.slice()
-    },
-    uiState: {
-      fetchInProgress: true,
-      fetchFailure: false,
-      createInProgress: false,
-      createFailure: false
-    }
+    data,
+    uiState
   };
 }
 
 function handleFetchFailure(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.fetchInProgress = false;
+  uiState.fetchFailure = true;
+
   return {
-    data: {
-      meetings: state.data.meetings.slice()
-    },
-    uiState: {
-      fetchInProgress: false,
-      fetchFailure: true,
-      createInProgress: false,
-      createFailure: false
-    }
+    data,
+    uiState
   };
 }
 
-function handleFetchSuccess(action) {
+function handleFetchSuccess(state, action) {
+  const uiState = { ...state.uiState };
+
+  uiState.fetchInProgress = false;
+  uiState.fetchFailure = false;
+
   return {
     data: {
       meetings: action.meetings
     },
-    uiState: {
-      fetchInProgress: false,
-      fetchFailure: false,
-      createInProgress: false,
-      createFailure: false
-    }
+    uiState
   };
 }
 
 function handleCreateStart(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.createInProgress = true;
+  uiState.createFailure = false;
+
   return {
-    data: {
-      meetings: state.data.meetings.slice()
-    },
-    uiState: {
-      fetchInProgress: false,
-      fetchFailure: false,
-      createInProgress: true,
-      createFailure: false
-    }
+    data,
+    uiState
   };
 }
 
 function handleCreateFailure(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.createInProgress = false;
+  uiState.createFailure = true;
+
   return {
-    data: {
-      meetings: state.data.meetings.slice()
-    },
-    uiState: {
-      fetchInProgress: false,
-      fetchFailure: false,
-      createInProgress: false,
-      createFailure: true
-    }
+    data,
+    uiState
   };
 }
 
 function handleCreateSuccess(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.createInProgress = false;
+  uiState.createFailure = false;
+
   return {
-    data: {
-      meetings: state.data.meetings.slice()
-    },
-    uiState: {
-      fetchInProgress: false,
-      fetchFailure: false,
-      createInProgress: false,
-      createFailure: false
-    }
+    data,
+    uiState
   };
 }
 
@@ -103,7 +98,7 @@ export function meetingReducer(state = initialState, action) {
     case types.MEETINGS_FETCH_FAILURE:
       return handleFetchFailure(state);
     case types.MEETINGS_FETCH_SUCCESS:
-      return handleFetchSuccess(action);
+      return handleFetchSuccess(state, action);
     case types.MEETING_CREATE_START:
       return handleCreateStart(state);
     case types.MEETING_CREATE_FAILURE:

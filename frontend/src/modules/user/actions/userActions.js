@@ -1,7 +1,8 @@
 import 'cross-fetch/polyfill';
 
-import { API_URL } from '../../../../config/config';
 import * as types from '../constants/ActionTypes';
+
+import { post } from '../../../utils/fetchHelpers';
 
 export function loginUIReset() {
   return {
@@ -56,14 +57,7 @@ export function login(email, password) {
   return (dispatch) => {
     dispatch(loginStart());
 
-    return fetch(`${API_URL}/users/token`, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    })
-      .then(res => res.json())
+    return post('/users/token', { email, password })
       .then((body) => {
         if (body.error || !body.token) {
           dispatch(loginFailure());
@@ -79,14 +73,7 @@ export function signup(email, password) {
   return (dispatch) => {
     dispatch(signupStart());
 
-    return fetch(`${API_URL}/users/signup`, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    })
-      .then(res => res.json())
+    return post('/users/signup', { email, password })
       .then((body) => {
         if (body.error) {
           dispatch(signupFailure());
