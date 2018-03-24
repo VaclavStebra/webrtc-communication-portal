@@ -8,8 +8,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import CreateMeetingForm from '../../../../src/modules/meeting/components/CreateMeetingForm';
 
-function renderCreateMeetingForm() {
-  return shallow(<CreateMeetingForm />);
+function renderCreateMeetingForm(actionInProgress = false) {
+  return shallow(<CreateMeetingForm
+    actionInProgress={actionInProgress}
+    onSubmit={() => {}}
+  />);
 }
 
 describe('Meeting module', () => {
@@ -57,6 +60,14 @@ describe('Meeting module', () => {
 
       expect(button.prop('label')).to.equal('Plan new meeting');
       expect(button.prop('primary')).to.equal(true);
+    });
+
+    it('has disabled action button when action is in progress', () => {
+      const element = renderCreateMeetingForm(true);
+
+      const button = element.find(RaisedButton).at(0);
+
+      expect(button.prop('disabled')).to.equal(true);
     });
   });
 });
