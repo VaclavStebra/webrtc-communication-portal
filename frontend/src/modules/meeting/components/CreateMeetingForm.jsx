@@ -110,6 +110,7 @@ export default class CreateMeetingForm extends React.Component {
             label="Plan new meeting"
             primary
             disabled={this.props.actionInProgress}
+            onClick={this.handleSubmit}
           />
         </div>
       </div>
