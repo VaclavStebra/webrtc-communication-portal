@@ -91,6 +91,19 @@ function handleCreateSuccess(state) {
   };
 }
 
+function handleCreateUIReset(state) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+
+  uiState.createInProgress = false;
+  uiState.createFailure = false;
+
+  return {
+    data,
+    uiState
+  };
+}
+
 export function meetingReducer(state = initialState, action) {
   switch (action.type) {
     case types.MEETINGS_FETCH_START:
@@ -105,6 +118,8 @@ export function meetingReducer(state = initialState, action) {
       return handleCreateFailure(state);
     case types.MEETING_CREATE_SUCCESS:
       return handleCreateSuccess(state);
+    case types.CREATE_UI_RESET:
+      return handleCreateUIReset(state);
     default:
       return state;
   }

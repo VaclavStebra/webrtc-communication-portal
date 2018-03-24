@@ -41,6 +41,12 @@ export function meetingCreateSuccess() {
   };
 }
 
+export function createUIReset() {
+  return {
+    type: types.CREATE_UI_RESET
+  };
+}
+
 export function fetchMeetings() {
   return (dispatch) => {
     dispatch(meetingsFetchStart());

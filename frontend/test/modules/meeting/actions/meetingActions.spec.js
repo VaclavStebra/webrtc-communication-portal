@@ -239,6 +239,14 @@ describe('Meeting module', () => {
             expect(store.getActions()).to.deep.equal(expectedActions);
           });
       });
+
+      it('creates an action for create meeting ui reset', () => {
+        const expectedAction = {
+          type: types.CREATE_UI_RESET
+        };
+
+        expect(actions.createUIReset()).to.deep.equal(expectedAction);
+      });
     });
   });
 });

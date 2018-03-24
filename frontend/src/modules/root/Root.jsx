@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import ApplicationBar from '../applicationBar/ApplicationBar';
+
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import SignupPageContainer from '../user/SignUpPage';
-import ApplicationBar from '../applicationBar/ApplicationBar';
+import CreateMeetingPageContainer from '../meeting/CreateMeetingPage';
+
 import { loginUIReset, logout, signupUIReset } from '../user/actions/userActions';
+import { createUIReset } from '../meeting/actions/meetingActions';
 
 export class Root extends React.Component {
   render() {
@@ -31,7 +35,7 @@ export class Root extends React.Component {
                   exact
                   render={() => {
                     if (this.props.isUserLoggedIn) {
-                      return <Redirect to="/" />;
+                      return <Redirect to="/meeting/create" />;
                     }
                     this.props.loginUIReset();
                     return <LoginPageContainer />;
@@ -48,6 +52,17 @@ export class Root extends React.Component {
                     return <SignupPageContainer />;
                   }}
                 />
+                <Route
+                  path="/meeting/create"
+                  exact
+                  render={() => {
+                    if (!this.props.isUserLoggedIn) {
+                      return <Redirect to="/login" />;
+                    }
+                    this.props.createMeetingUIReset();
+                    return <CreateMeetingPageContainer />;
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -61,14 +76,16 @@ Root.propTypes = {
   isUserLoggedIn: PropTypes.bool,
   onLogout: PropTypes.func,
   loginUIReset: PropTypes.func,
-  signupUIReset: PropTypes.func
+  signupUIReset: PropTypes.func,
+  createMeetingUIReset: PropTypes.func
 };
 
 Root.defaultProps = {
   isUserLoggedIn: false,
   onLogout: () => {},
   loginUIReset: () => {},
-  signupUIReset: () => {}
+  signupUIReset: () => {},
+  createMeetingUIReset: () => {}
 };
 
 const mapStateToProps = state => ({
@@ -84,6 +101,9 @@ const mapDispatchToProps = dispatch => ({
   },
   signupUIReset: () => {
     dispatch(signupUIReset());
+  },
+  createMeetingUIReset: () => {
+    dispatch(createUIReset());
   }
 });
 

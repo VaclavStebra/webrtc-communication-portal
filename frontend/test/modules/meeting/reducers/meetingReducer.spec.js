@@ -145,5 +145,21 @@ describe('Meeting module', () => {
         }
       });
     });
+
+    it('handles CREATE_UI_RESET', () => {
+      const action = {
+        type: types.CREATE_UI_RESET
+      };
+
+      const state = { ...initialState };
+      state.uiState = {
+        fetchInProgress: false,
+        fetchFailure: false,
+        createInProgress: false,
+        createFailure: true
+      };
+
+      expect(meetingReducer(state, action)).to.deep.equal(initialState);
+    });
   });
 });
