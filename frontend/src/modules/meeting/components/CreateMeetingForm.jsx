@@ -79,22 +79,26 @@ export default class CreateMeetingForm extends React.Component {
         <br />
         <DatePicker
           hintText="Start date"
+          floatingLabelText="Start date"
           value={this.state.startDate}
           onChange={this.handleStartDateChange}
         />
         <TimePicker
           hintText="Start time"
+          floatingLabelText="Start time"
           value={this.state.startTime}
           onChange={this.handleStartTimeChange}
         />
         <br />
         <DatePicker
           hintText="End date"
+          floatingLabelText="End date"
           value={this.state.endDate}
           onChange={this.handleEndDateChange}
         />
         <TimePicker
           hintText="End time"
+          floatingLabelText="End time"
           value={this.state.endTime}
           onChange={this.handleEndTimeChange}
         />
