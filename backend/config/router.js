@@ -2,10 +2,12 @@
 
 const index = require('../routes/index');
 const users = require('../routes/users');
+const meetings = require('../routes/meetings');
 
 module.exports = function(app) {
   app.use('/', index);
   app.use('/users', users);
+  app.use('/meetings', meetings);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

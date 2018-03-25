@@ -5,7 +5,7 @@ const passportJwt = require('passport-jwt');
 const ExtractJwt = passportJwt.ExtractJwt;
 const JwtStrategy = passportJwt.Strategy;
 
-const users = require('../mock/users');
+const UserManager = require('../modules/user/UserManager');
 const constants = require('../config/constants');
 
 const jwtOptions = {
@@ -13,13 +13,18 @@ const jwtOptions = {
   secretOrKey: constants.JWT_SECRET
 };
 
-const strategy = new JwtStrategy(jwtOptions, (jwt_payload, next) => {
-  const user = users.find(user => user.email === jwt_payload.email);
+const strategy = new JwtStrategy(jwtOptions, async (jwt_payload, next) => {
+  const userManager = new UserManager();
 
-  if (user) {
-    next(null, user);
-  } else {
-    next(null, false);
+  try {
+    const user = await userManager.findById(jwt_payload.id);
+    if (user) {
+      next(null, user);
+    } else {
+      next(null, false);
+    }
+  } catch (ex) {
+    next(ex, null);
   }
 });
 

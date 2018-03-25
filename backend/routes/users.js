@@ -13,10 +13,10 @@ router.post('/token', async function (req, res, next) {
     const user = await userManager.getUser();
 
     if (!user) {
-      return next({ status: 401, message: 'Invalid credentials'});
+      return next({ status: 401, message: 'Invalid credentials' });
     }
 
-    const tokenManager = new UserToken(user.email);
+    const tokenManager = new UserToken(user._id, user.email);
     const token = tokenManager.getToken();
 
     return res.json({ token });

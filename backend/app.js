@@ -3,7 +3,8 @@ const passport = require('passport');
 
 const app = express();
 
-require('./modules/user/models/user');
+require('./modules/user/models/');
+require('./modules/meeting/models/');
 
 require('./config/passport')(passport);
 require('./config/express')(app, passport);

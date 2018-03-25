@@ -3,16 +3,17 @@ const jwt = require('jsonwebtoken');
 const constants = require('../../config/constants');
 
 class UserToken {
-  constructor(email) {
+  constructor(id, email) {
+    this.id = id;
     this.email = email;
   }
 
   getToken() {
-    if (!this.email) {
+    if (!this.id || !this.email) {
       return null;
     }
 
-    return jwt.sign({ email: this.email }, constants.JWT_SECRET);
+    return jwt.sign({ id: this.id, email: this.email }, constants.JWT_SECRET);
   }
 }
 

@@ -32,6 +32,15 @@ class UserManager {
     return user;
   }
 
+  async findById(id) {
+    const options = {
+      criteria: { _id: id },
+      select: '_id email'
+    };
+
+    return User.findOne(options.criteria).select(options.select).exec();
+  }
+
   createUser() {
     const hashedPassword = this.getHash();
     const user = new User({
