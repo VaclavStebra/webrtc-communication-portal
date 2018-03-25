@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Redirect } from 'react-router-dom';
 
 import Snackbar from 'material-ui/Snackbar';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -78,14 +77,6 @@ describe('User module', () => {
       const circularProgresses = element.find(CircularProgress);
 
       expect(circularProgresses).to.have.length(0);
-    });
-
-    it('does not redirect when nobody is logged in', () => {
-      const element = renderSignUpPage();
-
-      const redirects = element.find(Redirect);
-
-      expect(redirects).to.have.length(0);
     });
   });
 });
