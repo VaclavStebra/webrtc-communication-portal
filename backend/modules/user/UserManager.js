@@ -1,17 +1,10 @@
-let users = [
-  {
-    email: 'john.doe@email.com',
-    password: 'password'
-  }
-];
+const users = require('../../mock/users');
 
 class UserManager {
   getUser(email, password) {
-    const user = users.find(user => {
+    return users.find(user => {
       return user.email === email && user.password === password;
     });
-
-    return user ? user : null;
   }
 }
 
