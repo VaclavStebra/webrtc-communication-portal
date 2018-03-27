@@ -1,31 +1,27 @@
 const express = require('express');
 const router = express.Router();
 
+const { wrapAsync } = require('../utils/routeUtils');
 const UserManager = require('../modules/user/UserManager');
 const UserToken = require('../modules/user/UserToken');
 
-router.post('/token', async function (req, res, next) {
+router.post('/token', wrapAsync(async function (req, res, next) {
   const { email, password } = req.body;
 
   const userManager = new UserManager(email, password);
+  const user = await userManager.getUser();
 
-  try {
-    const user = await userManager.getUser();
-
-    if (!user) {
-      return next({ status: 401, message: 'Invalid credentials' });
-    }
-
-    const tokenManager = new UserToken(user._id, user.email);
-    const token = tokenManager.getToken();
-
-    return res.json({ token });
-  } catch (ex) {
-    return next(ex);
+  if (!user) {
+    return next({ status: 401, message: 'Invalid credentials' });
   }
-});
 
-router.post('/signup', async function (req, res, next) {
+  const tokenManager = new UserToken(user._id, user.email);
+  const token = tokenManager.getToken();
+
+  return res.json({ token });
+}));
+
+router.post('/signup', wrapAsync(async function (req, res, next) {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -33,17 +29,12 @@ router.post('/signup', async function (req, res, next) {
   }
 
   const userManager = new UserManager(email, password);
+  await userManager.createUser();
 
-  try {
-    await userManager.createUser();
+  const tokenManager = new UserToken(email);
+  const token = tokenManager.getToken();
 
-    const tokenManager = new UserToken(email);
-    const token = tokenManager.getToken();
-
-    return res.json({ token });
-  } catch (ex) {
-    return next(ex);
-  }
-});
+  return res.json({ token });
+}));
 
 module.exports = router;

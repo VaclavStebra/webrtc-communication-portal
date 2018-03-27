@@ -4,9 +4,13 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
+const { wrapAsync } = require('../utils/routeUtils');
 const MeetingManager = require('../modules/meeting/MeetingManager');
 
-router.post('/create', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
+router.post(
+  '/create',
+  passport.authenticate('jwt', { session: false }),
+  wrapAsync(async function (req, res, next) {
   const { title, startDate, endDate, participants } = req.body;
 
   if (!title || !startDate || !endDate || !participants) {
@@ -17,19 +21,15 @@ router.post('/create', passport.authenticate('jwt', { session: false }), async f
 
   const meetingManager = new MeetingManager();
 
-  try {
-    const meeting = await meetingManager.createMeeting({
-      title,
-      startDate,
-      endDate,
-      participants: participantsEmails,
-      userId: req.user._id
-    });
+  const meeting = await meetingManager.createMeeting({
+    title,
+    startDate,
+    endDate,
+    participants: participantsEmails,
+    userId: req.user._id
+  });
 
-    return res.json({ message: 'Meeting created', id: meeting._id });
-  } catch (ex) {
-    return next(ex);
-  }
-});
+  return res.json({ message: 'Meeting created', id: meeting._id });
+}));
 
 module.exports = router;
