@@ -29,9 +29,9 @@ router.post('/signup', wrapAsync(async function (req, res, next) {
   }
 
   const userManager = new UserManager(email, password);
-  await userManager.createUser();
+  const user = await userManager.createUser();
 
-  const tokenManager = new UserToken(email);
+  const tokenManager = new UserToken(user._id, email);
   const token = tokenManager.getToken();
 
   return res.json({ token });
