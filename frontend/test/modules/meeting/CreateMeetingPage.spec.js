@@ -10,7 +10,8 @@ import CreateMeetingForm from '../../../src/modules/meeting/components/CreateMee
 function renderCreateMeetingPage(actionInProgress = false, actionFailure = false) {
   const props = {
     actionInProgress,
-    actionFailure
+    actionFailure,
+    token: ''
   };
 
   return shallow(<CreateMeetingPage
