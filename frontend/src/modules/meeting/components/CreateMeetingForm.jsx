@@ -64,7 +64,7 @@ export default class CreateMeetingForm extends React.Component {
       endDate,
       endTime,
       participants
-    });
+    }, this.props.token);
   }
 
   render() {
@@ -124,9 +124,11 @@ export default class CreateMeetingForm extends React.Component {
 
 CreateMeetingForm.propTypes = {
   actionInProgress: PropTypes.bool,
+  token: PropTypes.string,
   onSubmit: PropTypes.func.isRequired
 };
 
 CreateMeetingForm.defaultProps = {
-  actionInProgress: false
+  actionInProgress: false,
+  token: ''
 };

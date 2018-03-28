@@ -1,7 +1,7 @@
 import { userReducer } from '../../../../src/modules/user/reducers/userReducer';
 import * as types from '../../../../src/modules/user/constants/ActionTypes';
 
-const email = 'john.doe@email.com';
+const token = 'asdasdad';
 
 const usefulUiStates = {
   noProgressNoFail: {
@@ -42,7 +42,7 @@ const initialState = {
 };
 
 const loggedInState = {
-  data: email,
+  data: token,
   uiState: usefulUiStates.noProgressNoFail
 };
 
@@ -55,12 +55,12 @@ describe('User module', () => {
     it('handles LOGIN', () => {
       const action = {
         type: types.LOGIN_SUCCESS,
-        email
+        token
       };
 
       expect(userReducer(initialState, action)).to.deep.equal({
         data: {
-          email
+          token
         },
         uiState: usefulUiStates.noProgressNoFail
       });

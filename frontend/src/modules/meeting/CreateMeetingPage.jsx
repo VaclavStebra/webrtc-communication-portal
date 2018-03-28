@@ -28,6 +28,7 @@ export class CreateMeetingPage extends React.Component {
         <h1>Create meeting</h1>
         <div>
           <CreateMeetingForm
+            token={this.props.token}
             actionInProgress={this.props.actionInProgress}
             onSubmit={this.props.onCreate}
           />
@@ -45,7 +46,8 @@ export class CreateMeetingPage extends React.Component {
 CreateMeetingPage.propTypes = {
   actionInProgress: PropTypes.bool,
   actionFailure: PropTypes.bool,
-  onCreate: PropTypes.func.isRequired
+  onCreate: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired
 };
 
 CreateMeetingPage.defaultProps = {
@@ -55,12 +57,13 @@ CreateMeetingPage.defaultProps = {
 
 const mapStateToProps = state => ({
   actionInProgress: state.meeting.uiState.createInProgress,
-  actionFailure: state.meeting.uiState.createFailure
+  actionFailure: state.meeting.uiState.createFailure,
+  token: state.user.data.token
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCreate: (meetingParams) => {
-    dispatch(createMeeting(meetingParams));
+  onCreate: (meetingParams, token) => {
+    dispatch(createMeeting(meetingParams, token));
   }
 });
 

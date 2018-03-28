@@ -20,7 +20,7 @@ export function userReducer(state = initialState, action) {
     case types.LOGIN_SUCCESS:
       return {
         data: {
-          email: action.email
+          token: action.token
         },
         uiState
       };
