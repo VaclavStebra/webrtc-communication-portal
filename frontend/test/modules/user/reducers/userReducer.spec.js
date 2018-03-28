@@ -1,7 +1,7 @@
 import { userReducer } from '../../../../src/modules/user/reducers/userReducer';
 import * as types from '../../../../src/modules/user/constants/ActionTypes';
 
-const token = 'asdasdad';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWQiOiIxIiwiaWF0IjoxNTE2MjM5MDIyfQ.K07jFgtLMgXxgzTKpgp488IZenYAMUgOI7v9nmysfYo';
 
 const usefulUiStates = {
   noProgressNoFail: {
@@ -42,7 +42,11 @@ const initialState = {
 };
 
 const loggedInState = {
-  data: token,
+  data: {
+    token,
+    email: 'test@test.com',
+    id: '1'
+  },
   uiState: usefulUiStates.noProgressNoFail
 };
 
@@ -60,7 +64,9 @@ describe('User module', () => {
 
       expect(userReducer(initialState, action)).to.deep.equal({
         data: {
-          token
+          token,
+          email: 'test@test.com',
+          id: '1'
         },
         uiState: usefulUiStates.noProgressNoFail
       });

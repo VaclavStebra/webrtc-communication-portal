@@ -47,6 +47,20 @@ export function createUIReset() {
   };
 }
 
+export function addParticipant(user) {
+  return {
+    type: types.ADD_PARTICIPANT,
+    user
+  };
+}
+
+export function removeParticipant(user) {
+  return {
+    type: types.REMOVE_PARTICIPANT,
+    user
+  };
+}
+
 export function fetchMeetings() {
   return (dispatch) => {
     dispatch(meetingsFetchStart());

@@ -1,22 +1,25 @@
 import { meetingReducer } from '../../../../src/modules/meeting/reducers/meetingReducer';
 import * as types from '../../../../src/modules/meeting/constants/ActionTypes';
 
+const initialDataState = {
+  meetings: [],
+  participants: []
+};
+
+const initialUiState = {
+  fetchInProgress: false,
+  fetchFailure: false,
+  createInProgress: false,
+  createFailure: false
+};
+
 const initialState = {
-  data: {
-    meetings: []
-  },
-  uiState: {
-    fetchInProgress: false,
-    fetchFailure: false,
-    createInProgress: false,
-    createFailure: false
-  }
+  data: initialDataState,
+  uiState: initialUiState
 };
 
 const fetchInProgressState = {
-  data: {
-    meetings: []
-  },
+  data: initialDataState,
   uiState: {
     fetchInProgress: true,
     fetchFailure: false,
@@ -37,9 +40,7 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(initialState, action)).to.deep.equal({
-        data: {
-          meetings: []
-        },
+        data: initialDataState,
         uiState: {
           fetchInProgress: true,
           fetchFailure: false,
@@ -55,9 +56,7 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(initialState, action)).to.deep.equal({
-        data: {
-          meetings: []
-        },
+        data: initialDataState,
         uiState: {
           fetchInProgress: false,
           fetchFailure: true,
@@ -81,14 +80,10 @@ describe('Meeting module', () => {
           meetings: [{
             id: 1,
             desc: 'meeting'
-          }]
+          }],
+          participants: []
         },
-        uiState: {
-          fetchInProgress: false,
-          fetchFailure: false,
-          createInProgress: false,
-          createFailure: false
-        }
+        uiState: initialUiState
       });
     });
 
@@ -98,9 +93,7 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(initialState, action)).to.deep.equal({
-        data: {
-          meetings: []
-        },
+        data: initialDataState,
         uiState: {
           fetchInProgress: false,
           fetchFailure: false,
@@ -116,9 +109,7 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(initialState, action)).to.deep.equal({
-        data: {
-          meetings: []
-        },
+        data: initialDataState,
         uiState: {
           fetchInProgress: false,
           fetchFailure: false,
@@ -134,15 +125,8 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(initialState, action)).to.deep.equal({
-        data: {
-          meetings: []
-        },
-        uiState: {
-          fetchInProgress: false,
-          fetchFailure: false,
-          createInProgress: false,
-          createFailure: false
-        }
+        data: initialDataState,
+        uiState: initialUiState
       });
     });
 
@@ -160,6 +144,55 @@ describe('Meeting module', () => {
       };
 
       expect(meetingReducer(state, action)).to.deep.equal(initialState);
+    });
+
+    it('handles ADD_PARTICIPANT', () => {
+      const action = {
+        type: types.ADD_PARTICIPANT,
+        user: { id: '1', email: 'test@test.com' }
+      };
+
+      expect(meetingReducer(undefined, action)).to.deep.equal({
+        data: {
+          meetings: [],
+          participants: [
+            {
+              id: '1',
+              email: 'test@test.com'
+            }
+          ]
+        },
+        uiState: initialUiState
+      });
+    });
+
+    it('handles REMOVE_PARTICIPANT', () => {
+      const action = {
+        type: types.REMOVE_PARTICIPANT,
+        user: { id: '1', email: 'test@test.com' }
+      };
+
+      const state = { ...initialState };
+
+      state.data.participants.push({
+        id: '1', email: 'test@test.com'
+      });
+      state.data.participants.push({
+        id: '2', email: 'test2@test.com'
+      });
+
+      expect(meetingReducer(state, action)).to.deep.equal({
+        data: {
+          meetings: [],
+          participants: [
+            {
+              id: '2',
+              email: 'test2@test.com'
+            }
+          ]
+        },
+        uiState: initialUiState
+      });
     });
   });
 });

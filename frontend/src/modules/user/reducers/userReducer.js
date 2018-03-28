@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode';
+
 import * as types from '../constants/ActionTypes';
 
 const initialUiState = {
@@ -12,18 +14,26 @@ const initialState = {
   uiState: initialUiState
 };
 
+function handleLoginSuccess(action, uiState) {
+  const decoded = jwtDecode(action.token);
+
+  return {
+    data: {
+      token: action.token,
+      email: decoded.email,
+      id: decoded.id
+    },
+    uiState
+  };
+}
+
 export function userReducer(state = initialState, action) {
   const newUIState = { ...state.uiState };
   const uiState = { ...initialUiState };
 
   switch (action.type) {
     case types.LOGIN_SUCCESS:
-      return {
-        data: {
-          token: action.token
-        },
-        uiState
-      };
+      return handleLoginSuccess(action, uiState);
     case types.LOGIN_FAILURE:
       uiState.loginFailure = true;
 

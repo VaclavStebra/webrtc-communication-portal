@@ -2,7 +2,8 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   data: {
-    meetings: []
+    meetings: [],
+    participants: []
   },
   uiState: {
     fetchInProgress: false,
@@ -46,7 +47,8 @@ function handleFetchSuccess(state, action) {
 
   return {
     data: {
-      meetings: action.meetings
+      meetings: action.meetings,
+      participants: state.data.participants.slice()
     },
     uiState
   };
@@ -104,6 +106,39 @@ function handleCreateUIReset(state) {
   };
 }
 
+function handleAddParticipant(state, action) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+  const { user } = action;
+
+  const participant = data.participants.find(p => p.id === user.id);
+
+  if (!participant) {
+    data.participants.push(user);
+  }
+
+  // Force rerender
+  data.participants = data.participants.slice();
+
+  return {
+    data,
+    uiState
+  };
+}
+
+function handleRemoveParticipant(state, action) {
+  const uiState = { ...state.uiState };
+  const data = { ...state.data };
+  const { user } = action;
+
+  data.participants = data.participants.filter(participant => participant.id !== user.id);
+
+  return {
+    data,
+    uiState
+  };
+}
+
 export function meetingReducer(state = initialState, action) {
   switch (action.type) {
     case types.MEETINGS_FETCH_START:
@@ -120,6 +155,10 @@ export function meetingReducer(state = initialState, action) {
       return handleCreateSuccess(state);
     case types.CREATE_UI_RESET:
       return handleCreateUIReset(state);
+    case types.ADD_PARTICIPANT:
+      return handleAddParticipant(state, action);
+    case types.REMOVE_PARTICIPANT:
+      return handleRemoveParticipant(state, action);
     default:
       return state;
   }

@@ -9,10 +9,10 @@ import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import SignupPageContainer from '../user/SignUpPage';
 import CreateMeetingPageContainer from '../meeting/CreateMeetingPage';
-import MeetingPage from '../meeting/MeetingPage';
+import MeetingPageContainer from '../meeting/MeetingPage';
 
 import { loginUIReset, logout, signupUIReset } from '../user/actions/userActions';
-import { createUIReset } from '../meeting/actions/meetingActions';
+import { createUIReset, addParticipant } from '../meeting/actions/meetingActions';
 
 import socketSetup from '../../sockets/';
 
@@ -75,8 +75,9 @@ export class Root extends React.Component {
                     }
 
                     socketSetup(this.props.dispatch, this.props.token, match.params.id);
+                    this.props.addParticipant({ id: this.props.userId, email: this.props.email });
 
-                    return <MeetingPage />;
+                    return <MeetingPageContainer />;
                   }}
                 />
               </div>
@@ -94,23 +95,31 @@ Root.propTypes = {
   loginUIReset: PropTypes.func,
   signupUIReset: PropTypes.func,
   createMeetingUIReset: PropTypes.func,
+  addParticipant: PropTypes.func,
   dispatch: PropTypes.func,
-  token: PropTypes.string
+  token: PropTypes.string,
+  email: PropTypes.string,
+  userId: PropTypes.string
 };
 
 Root.defaultProps = {
   isUserLoggedIn: false,
   token: '',
+  email: '',
+  userId: '',
   onLogout: () => {},
   loginUIReset: () => {},
   signupUIReset: () => {},
   createMeetingUIReset: () => {},
+  addParticipant: () => {},
   dispatch: () => {}
 };
 
 const mapStateToProps = state => ({
   isUserLoggedIn: state.user.data !== null,
-  token: state.user.data ? state.user.data.token : null
+  token: state.user.data ? state.user.data.token : '',
+  email: state.user.data ? state.user.data.email : '',
+  userId: state.user.data ? state.user.data.id : ''
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -126,7 +135,9 @@ const mapDispatchToProps = dispatch => ({
   createMeetingUIReset: () => {
     dispatch(createUIReset());
   },
-
+  addParticipant: (participant) => {
+    dispatch(addParticipant(participant));
+  },
   dispatch
 });
 
