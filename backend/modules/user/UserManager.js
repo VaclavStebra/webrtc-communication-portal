@@ -1,17 +1,58 @@
-let users = [
-  {
-    email: 'john.doe@email.com',
-    password: 'password'
-  }
-];
+'use strict';
+
+const crypto = require('crypto');
+
+const mongoose = require('mongoose');
+
+const User = mongoose.model('User');
 
 class UserManager {
-  getUser(email, password) {
-    const user = users.find(user => {
-      return user.email === email && user.password === password;
+  constructor(email, password) {
+    this.email = email;
+    this.password = password;
+  }
+
+  async getUser() {
+    const options = {
+      criteria: { email: this.email },
+      select: 'email hashed_password'
+    };
+
+    const user = await User.findOne(options.criteria).select(options.select).exec();
+    if (!user) {
+      return null;
+    }
+
+    const hash = this.getHash();
+
+    if (user.hashed_password !== hash) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async findById(id) {
+    const options = {
+      criteria: { _id: id },
+      select: '_id email'
+    };
+
+    return User.findOne(options.criteria).select(options.select).exec();
+  }
+
+  createUser() {
+    const hashedPassword = this.getHash();
+    const user = new User({
+      email: this.email,
+      hashed_password: hashedPassword
     });
 
-    return user ? user : null;
+    return user.save();
+  }
+
+  getHash() {
+    return crypto.createHmac('sha256', 'secret').update(this.password).digest('hex');
   }
 }
 
