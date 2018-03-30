@@ -28,6 +28,9 @@ module.exports = function(server) {
       socket.room = room;
       socket.join(room);
       if (room in rooms) {
+        for (let otherSocket of rooms[room]) {
+          socket.emit('peer.connected', otherSocket.user);
+        }
         rooms[room].push(socket);
         socket.to(room).emit('peer.connected', socket.user);
         console.log(socket.user.email, 'has joined room', room);
