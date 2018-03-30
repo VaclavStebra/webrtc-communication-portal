@@ -2,14 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { Tab, Tabs } from 'material-ui/Tabs';
+
+import ParticipantsList from './components/ParticipantsList';
+
 export class MeetingPage extends React.Component {
   render() {
     return (
-      <div className="center">
-        {this.props.participants.map(p => (
-          <p key={p.id}>{p.email}</p>
-          ))}
-      </div>
+      <Tabs>
+        <Tab label="Chat" />
+        <Tab label="Participants">
+          <ParticipantsList participants={this.props.participants} />
+        </Tab>
+      </Tabs>
     );
   }
 }
