@@ -12,7 +12,8 @@ import CreateMeetingPageContainer from '../meeting/CreateMeetingPage';
 import MeetingPageContainer from '../meeting/MeetingPage';
 
 import { loginUIReset, logout, signupUIReset } from '../user/actions/userActions';
-import { createUIReset, addParticipant } from '../meeting/actions/meetingActions';
+import { createUIReset } from '../meeting/actions/meetingActions';
+import { addParticipant } from '../meeting/actions/participantsActions';
 
 import socketSetup from '../../sockets/';
 
@@ -67,7 +68,7 @@ export class Root extends React.Component {
                   }}
                 />
                 <Route
-                  path="/meeting/:id"
+                  path="/meeting/detail/:id"
                   exact
                   render={({ match }) => {
                     if (!this.props.isUserLoggedIn) {

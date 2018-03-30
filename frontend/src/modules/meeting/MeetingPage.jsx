@@ -19,7 +19,7 @@ MeetingPage.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  participants: state.meeting.data.participants
+  participants: state.participants
 });
 
 export default connect(mapStateToProps)(MeetingPage);

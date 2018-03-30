@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-import { addParticipant, removeParticipant } from '../modules/meeting/actions/meetingActions';
+import { addParticipant, removeParticipant } from '../modules/meeting/actions/participantsActions';
 
 const setupSocket = (dispatch, token, meetingId) => {
   const socket = io.connect('http://localhost:3001', {
