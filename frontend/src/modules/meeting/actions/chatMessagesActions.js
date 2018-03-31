@@ -7,6 +7,9 @@ export function addChatMessage(message) {
   };
 }
 
-export default {
-  addChatMessage
-};
+export function sendChatMessage(message) {
+  return {
+    type: types.SEND_CHAT_MESSAGE,
+    message
+  };
+}

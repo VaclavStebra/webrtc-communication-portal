@@ -41,7 +41,7 @@ module.exports = function(server) {
     });
 
     socket.on('chat message', function (msg) {
-      console.log('got message: ' + msg);
+      console.log('got message: ' + JSON.stringify(msg));
       console.log('sending message to room: '+ socket.room);
       socket.to(socket.room).emit('chat message', msg);
     });

@@ -75,7 +75,11 @@ export class Root extends React.Component {
                       return <Redirect to="/login" />;
                     }
 
-                    socketSetup(this.props.dispatch, this.props.token, match.params.id);
+                    window.socket = socketSetup(
+                      this.props.dispatch,
+                      this.props.token,
+                      match.params.id
+                    );
                     this.props.addParticipant({ id: this.props.userId, email: this.props.email });
 
                     return <MeetingPageContainer />;

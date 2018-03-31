@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 
 export default class MessageList extends React.Component {
   render() {
+    const messages = this.props.messages.slice().sort((a, b) => b.timestamp - a.timestamp);
+
     return (
       <div className="center">
-        {this.props.messages.map((p, index) => (
-          <p key={index.toString()}><strong>{p.email}</strong> {p.text}</p>
+        {messages.map(p => (
+          <p key={p.timestamp}><strong>{p.email}</strong> {p.text}</p>
         ))}
       </div>
     );
