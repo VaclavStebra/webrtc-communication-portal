@@ -6,7 +6,7 @@ export default class MessageList extends React.Component {
     return (
       <div className="center">
         {this.props.messages.map((p, index) => (
-          <p key={index}><strong>{p.email}</strong> {p.text}</p>
+          <p key={index.toString()}><strong>{p.email}</strong> {p.text}</p>
         ))}
       </div>
     );

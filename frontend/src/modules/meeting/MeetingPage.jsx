@@ -12,10 +12,10 @@ export class MeetingPage extends React.Component {
     return (
       <Tabs>
         <Tab label="Chat">
-          <MessageList messages={this.props.messages}/>
+          <MessageList messages={this.props.messages} />
         </Tab>
         <Tab label="Participants">
-          <ParticipantsList participants={this.props.participants}/>
+          <ParticipantsList participants={this.props.participants} />
         </Tab>
       </Tabs>
     );

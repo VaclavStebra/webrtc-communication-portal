@@ -6,3 +6,7 @@ export function addChatMessage(message) {
     message
   };
 }
+
+export default {
+  addChatMessage
+};
