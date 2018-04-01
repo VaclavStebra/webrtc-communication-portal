@@ -46,6 +46,20 @@ module.exports = function(server) {
       socket.to(socket.room).emit('chat message', msg);
     });
 
+    socket.on('webrtc.message', function (msg) {
+      const filteredSockets = rooms[socket.room].filter(function (s) {
+        return s.user.id === msg.to;
+      });
+      if (filteredSockets.length === 0) {
+        console.warn('Cannot send message to user with id ', msg.to);
+        return;
+      }
+      const s = filteredSockets[0];
+      s.emit('webrtc.message', msg);
+      console.log('sending message to', msg.to, 'from', msg.from);
+    });
+
+
     socket.on('disconnect', function () {
       if ( ! socket.room) {
         return;
