@@ -22,6 +22,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
+require('../socketServer')(server);
 
 /**
  * Connect to db and listen on provided port, on all network interfaces.

@@ -28,14 +28,7 @@ function mockPostTokenWrongCredentials() {
   fetchMock
     .postOnce(
       `${API_URL}/users/token`,
-      {
-        body: {
-          error: 'Invalid credentials'
-        },
-        headers: {
-          'content-type': 'application/json'
-        }
-      }
+      401
     );
 }
 

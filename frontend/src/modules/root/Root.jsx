@@ -9,9 +9,13 @@ import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
 import SignupPageContainer from '../user/SignUpPage';
 import CreateMeetingPageContainer from '../meeting/CreateMeetingPage';
+import MeetingPageContainer from '../meeting/MeetingPage';
 
 import { loginUIReset, logout, signupUIReset } from '../user/actions/userActions';
 import { createUIReset } from '../meeting/actions/meetingActions';
+import { addParticipant } from '../meeting/actions/participantsActions';
+
+import socketSetup from '../../sockets/';
 
 export class Root extends React.Component {
   render() {
@@ -63,6 +67,24 @@ export class Root extends React.Component {
                     return <CreateMeetingPageContainer />;
                   }}
                 />
+                <Route
+                  path="/meeting/detail/:id"
+                  exact
+                  render={({ match }) => {
+                    if (!this.props.isUserLoggedIn) {
+                      return <Redirect to="/login" />;
+                    }
+
+                    window.socket = socketSetup(
+                      this.props.dispatch,
+                      this.props.token,
+                      match.params.id
+                    );
+                    this.props.addParticipant({ id: this.props.userId, email: this.props.email });
+
+                    return <MeetingPageContainer />;
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -77,19 +99,32 @@ Root.propTypes = {
   onLogout: PropTypes.func,
   loginUIReset: PropTypes.func,
   signupUIReset: PropTypes.func,
-  createMeetingUIReset: PropTypes.func
+  createMeetingUIReset: PropTypes.func,
+  addParticipant: PropTypes.func,
+  dispatch: PropTypes.func,
+  token: PropTypes.string,
+  email: PropTypes.string,
+  userId: PropTypes.string
 };
 
 Root.defaultProps = {
   isUserLoggedIn: false,
+  token: '',
+  email: '',
+  userId: '',
   onLogout: () => {},
   loginUIReset: () => {},
   signupUIReset: () => {},
-  createMeetingUIReset: () => {}
+  createMeetingUIReset: () => {},
+  addParticipant: () => {},
+  dispatch: () => {}
 };
 
 const mapStateToProps = state => ({
-  isUserLoggedIn: state.user.data !== null
+  isUserLoggedIn: state.user.data !== null,
+  token: state.user.data ? state.user.data.token : '',
+  email: state.user.data ? state.user.data.email : '',
+  userId: state.user.data ? state.user.data.id : ''
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -104,7 +139,11 @@ const mapDispatchToProps = dispatch => ({
   },
   createMeetingUIReset: () => {
     dispatch(createUIReset());
-  }
+  },
+  addParticipant: (participant) => {
+    dispatch(addParticipant(participant));
+  },
+  dispatch
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

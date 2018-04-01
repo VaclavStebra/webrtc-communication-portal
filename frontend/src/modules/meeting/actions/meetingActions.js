@@ -63,7 +63,7 @@ export function fetchMeetings() {
   };
 }
 
-export function createMeeting(meetingParams) {
+export function createMeeting(meetingParams, token) {
   const {
     title, startDate, endDate, participants
   } = meetingParams;
@@ -73,7 +73,7 @@ export function createMeeting(meetingParams) {
 
     return post('/meetings/create', {
       title, startDate, endDate, participants
-    })
+    }, token)
       .then((body) => {
         if (body.error) {
           dispatch(meetingCreateFailure());
