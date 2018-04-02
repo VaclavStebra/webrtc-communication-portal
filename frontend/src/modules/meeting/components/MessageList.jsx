@@ -6,7 +6,7 @@ export default class MessageList extends React.Component {
     const messages = this.props.messages.slice().sort((a, b) => b.timestamp - a.timestamp);
 
     return (
-      <div className="center">
+      <div>
         {messages.map(p => (
           <p key={p.timestamp}><strong>{p.email}</strong> {p.text}</p>
         ))}

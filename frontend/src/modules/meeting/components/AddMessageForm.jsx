@@ -27,7 +27,7 @@ export default class AddMessageForm extends React.Component {
 
   render() {
     return (
-      <div className="center">
+      <div>
         <TextField
           id="chatMessageInput"
           value={this.state.text}

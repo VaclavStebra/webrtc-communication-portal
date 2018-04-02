@@ -14,6 +14,10 @@ export class MeetingPage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      stream: null
+    };
+
     this.addNewMessage = this.addNewMessage.bind(this);
   }
 
@@ -21,11 +25,28 @@ export class MeetingPage extends React.Component {
     this.props.onAddMessage(this.props.user, text, new Date().getTime());
   }
 
+  gotStream(s) {
+    this.setState({stream: URL.createObjectURL(s)});
+  }
+
+  componentDidMount() {
+    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+      .then(s => {
+        this.gotStream(s);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
   render() {
     return (
       <Tabs>
+        <Tab label="Video">
+          <video id="local-video" autoPlay muted src={this.state.stream} />
+        </Tab>
         <Tab label="Chat">
-          <div>
+          <div className="center">
             <div>
               <AddMessageForm submit={this.addNewMessage} />
             </div>
@@ -33,7 +54,9 @@ export class MeetingPage extends React.Component {
           </div>
         </Tab>
         <Tab label="Participants">
-          <ParticipantsList participants={this.props.participants} />
+          <div  className="center">
+            <ParticipantsList participants={this.props.participants} />
+          </div>
         </Tab>
       </Tabs>
     );
