@@ -9,41 +9,40 @@ import MessageList from './components/MessageList';
 import AddMessageForm from './components/AddMessageForm';
 
 import { addChatMessage, sendChatMessage } from './actions/chatMessagesActions';
+import { localStreamStarted } from './actions/videoActions';
+import VideoStream from './components/VideoStream';
 
 export class MeetingPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      stream: null
-    };
-
     this.addNewMessage = this.addNewMessage.bind(this);
+  }
+
+  componentDidMount() {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then((stream) => {
+        this.props.onLocalStreamObtained(stream);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   addNewMessage(text) {
     this.props.onAddMessage(this.props.user, text, new Date().getTime());
   }
 
-  gotStream(s) {
-    this.setState({stream: URL.createObjectURL(s)});
-  }
-
-  componentDidMount() {
-    navigator.mediaDevices.getUserMedia({video: true, audio: false})
-      .then(s => {
-        this.gotStream(s);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
-
   render() {
     return (
       <Tabs>
         <Tab label="Video">
-          <video id="local-video" autoPlay muted src={this.state.stream} />
+          <VideoStream
+            id="local-video"
+            autoPlay
+            muted
+            stream={this.props.localStream}
+          />
         </Tab>
         <Tab label="Chat">
           <div className="center">
@@ -54,7 +53,7 @@ export class MeetingPage extends React.Component {
           </div>
         </Tab>
         <Tab label="Participants">
-          <div  className="center">
+          <div className="center">
             <ParticipantsList participants={this.props.participants} />
           </div>
         </Tab>
@@ -67,19 +66,30 @@ MeetingPage.propTypes = {
   user: PropTypes.string.isRequired,
   participants: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   messages: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
-  onAddMessage: PropTypes.func.isRequired
+  localStream: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  onAddMessage: PropTypes.func.isRequired,
+  onLocalStreamObtained: PropTypes.func.isRequired
+};
+
+MeetingPage.defaultProps = {
+  localStream: null
 };
 
 const mapStateToProps = state => ({
   user: state.user.data.email,
   participants: state.participants,
-  messages: state.messages
+  messages: state.messages,
+  localStream: state.videoStreams.local
 });
 
 const mapDispatchToProps = dispatch => ({
   onAddMessage: (email, text, timestamp) => {
     dispatch(sendChatMessage({ email, text }));
     dispatch(addChatMessage({ email, text, timestamp }));
+  },
+
+  onLocalStreamObtained: (stream) => {
+    dispatch(localStreamStarted(stream));
   }
 });
 
