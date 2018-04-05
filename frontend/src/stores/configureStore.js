@@ -5,14 +5,18 @@ import thunkMiddleware from 'redux-thunk';
 import rootReducer from '../reducers/index';
 import tokenStore from '../modules/user/middleware/tokenStore';
 import wsMiddleware from '../modules/meeting/middleware/wsMiddleware';
+import webRtcMiddleware from '../modules/meeting/middleware/webRtcMiddleware';
 
 const createStoreWithMiddleware = applyMiddleware(
   thunkMiddleware,
   logger,
   tokenStore,
-  wsMiddleware
+  wsMiddleware,
+  webRtcMiddleware
 )(createStore);
 
+const store = createStoreWithMiddleware(rootReducer);
+
 export default function configureStore() {
-  return createStoreWithMiddleware(rootReducer);
+  return store;
 }
