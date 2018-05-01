@@ -1,0 +1,21 @@
+{
+  "name": "webrtc-communication-portal",
+  "description": "Communication portal built using WebRTC. Part of Diploma thesis at Faculty of Informatics at Masaryk University",
+  "main": "server.js",
+  "authors": [
+    "Vaclav Stebra <vstebra@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/VaclavStebra/webrtc-communication-portal",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "kurento-utils": "^6.7.0"
+  }
+}
