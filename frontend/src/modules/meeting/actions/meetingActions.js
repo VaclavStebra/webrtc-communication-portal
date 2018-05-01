@@ -1,4 +1,5 @@
 import 'cross-fetch/polyfill';
+import { push } from 'react-router-redux';
 
 import * as types from '../constants/ActionTypes';
 
@@ -79,6 +80,7 @@ export function createMeeting(meetingParams, token) {
           dispatch(meetingCreateFailure());
         } else {
           dispatch(meetingCreateSuccess());
+          dispatch(push(`/meeting/detail/${body.id}`));
         }
       })
       .catch(() => dispatch(meetingCreateFailure()));
