@@ -1,6 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
+import { push } from 'react-router-redux';
 
 import { API_URL } from '../../../../config/config';
 import * as actions from '../../../../src/modules/meeting/actions/meetingActions';
@@ -197,7 +198,8 @@ describe('Meeting module', () => {
 
         const expectedActions = [
           { type: types.MEETING_CREATE_START },
-          { type: types.MEETING_CREATE_SUCCESS }
+          { type: types.MEETING_CREATE_SUCCESS },
+          push('/meeting/detail/undefined')
         ];
 
         const store = mockStore({});
