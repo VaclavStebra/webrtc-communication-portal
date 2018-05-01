@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
+
+import { Route, Redirect } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
+
 import { connect } from 'react-redux';
 
 import ApplicationBar from '../applicationBar/ApplicationBar';
+
+import { history } from '../../stores/configureStore';
 
 import HomePage from '../home/HomePage';
 import LoginPageContainer from '../user/LoginPage';
@@ -21,7 +26,7 @@ export class Root extends React.Component {
   render() {
     return (
       <div>
-        <Router>
+        <ConnectedRouter history={history}>
           <div>
             <ApplicationBar
               isUserLoggedIn={this.props.isUserLoggedIn}
@@ -88,7 +93,7 @@ export class Root extends React.Component {
               </div>
             </div>
           </div>
-        </Router>
+        </ConnectedRouter>
       </div>
     );
   }
