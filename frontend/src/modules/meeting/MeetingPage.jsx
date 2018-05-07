@@ -26,6 +26,9 @@ export class MeetingPage extends React.Component {
   render() {
     return (
       <Tabs>
+        <Tab label="Video">
+          <div id="remote-streams" />
+        </Tab>
         <Tab label="Chat">
           <div>
             <div>

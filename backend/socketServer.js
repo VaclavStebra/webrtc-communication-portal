@@ -129,7 +129,7 @@ function join(socket, room, callback) {
   socket.join(room.name);
 
   const user = {
-    id: socket.id,
+    id: socket.user.id,
     user: socket.user,
     name: socket.user.email,
     roomName: room.name,
@@ -168,7 +168,7 @@ function join(socket, room, callback) {
       const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
       user.socket.emit('message', {
         id: 'iceCandidate',
-        name: user.name,
+        name: user.id,
         candidate
       });
     });
@@ -181,9 +181,9 @@ function join(socket, room, callback) {
         user.socket.emit('peer.connected', usersInRoom[i].user);
         usersInRoom[i].socket.emit('message', {
           id: 'newParticipantArrived',
-          name: user.name
+          name: user.id
         });
-        existingUsers.push(usersInRoom[i].name);
+        existingUsers.push(usersInRoom[i].id);
       }
     }
 
@@ -203,7 +203,7 @@ function join(socket, room, callback) {
 }
 
 function receiveVideoFrom(socket, senderId, sdpOffer, callback) {
-  const user = users[socket.id];
+  const user = users[socket.user.id];
   const sender = users[senderId];
 
   getEndpointForUser(user, sender, (error, endpoint) => {
@@ -220,7 +220,7 @@ function receiveVideoFrom(socket, senderId, sdpOffer, callback) {
 
       const data = {
         id: 'receiveVideoAnswer',
-        name: sender.name,
+        name: sender.id,
         sdpAnswer
       };
 
@@ -280,7 +280,7 @@ function getEndpointForUser(user, sender, callback) {
           const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
           user.socket.emit('message', {
             id: 'iceCandidate',
-            name: sender.name,
+            name: sender.id,
             candidate
           });
         });
@@ -344,7 +344,7 @@ function leaveRoom(socket, callback) {
 }
 
 function addIceCandidate(socket, message, callback) {
-  const user = users[socket.id];
+  const user = users[socket.user.id];
   if (user !== null) {
     const candidate = kurento.register.complexTypes.IceCandidate(message.candidate);
     if (message.sender === user.id) {

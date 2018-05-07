@@ -5,7 +5,8 @@
     "mocha": true
   },
   "globals": {
-    "expect": true
+    "expect": true,
+    "kurentoUtils": true
   },
   "rules": {
     "react/jsx-filename-extension": [
