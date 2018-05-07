@@ -48,52 +48,40 @@ class CallManager {
         return callback(error);
       }
 
-      outgoingMedia.setMaxVideoRecvBandwidth(300);
-      outgoingMedia.setMinVideoRecvBandwidth(100);
       user.outgoingMedia = outgoingMedia;
 
-      const iceCandidateQueue = user.iceCandidateQueue[user.name];
-      if (iceCandidateQueue) {
-        while(iceCandidateQueue.length) {
-          const message = iceCandidateQueue.shift();
-          user.outgoingMedia.addIceCandidate(message.candidate);
-        }
-      }
+      this.setConstraintsOnMediaEndpoint(outgoingMedia);
+      this.processIceCandidateQueue(user.iceCandidateQueue[user.name], outgoingMedia);
+      this.setOnIceCandidateOnEndpoint(user.outgoingMedia, user.socket, user.id);
 
-      user.outgoingMedia.on('OnIceCandidate', event => {
-        const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
-        user.socket.emit('message', {
-          id: 'iceCandidate',
-          name: user.id,
-          candidate
-        });
-      });
+      this.notifyOthersOnJoin(room, user);
 
-      const usersInRoom = room.participants;
-
-      let existingUsers = [];
-      for (let i in usersInRoom) {
-        if (usersInRoom[i].id !== user.id) {
-          user.socket.emit('peer.connected', usersInRoom[i].user);
-          usersInRoom[i].socket.emit('message', {
-            id: 'newParticipantArrived',
-            name: user.id
-          });
-          existingUsers.push(usersInRoom[i].id);
-        }
-      }
-
-      user.socket.emit('message', {
-        id: 'existingParticipants',
-        data: existingUsers,
-        roomName: room.name
-      });
-
-      room.participants[user.id] = user;
+      room.participants.set(user.id, user);
 
       user.socket.to(user.roomName).emit('peer.connected', user.user);
 
       callback(null, user);
+    });
+  }
+
+  notifyOthersOnJoin(room, user) {
+    let existingUsers = [];
+
+    for (let userInRoom of room.participants.values()) {
+      if (userInRoom.id !== user.id) {
+        user.socket.emit('peer.connected', userInRoom.user);
+        userInRoom.socket.emit('message', {
+          id: 'newParticipantArrived',
+          name: user.id
+        });
+        existingUsers.push(userInRoom.id);
+      }
+    }
+
+    user.socket.emit('message', {
+      id: 'existingParticipants',
+      data: existingUsers,
+      roomName: room.name
     });
   }
 
@@ -119,7 +107,7 @@ class CallManager {
         const room = {
           name: roomName,
           pipeline,
-          participants: {},
+          participants: new Map(),
           kurentoClient
         };
 
@@ -176,33 +164,18 @@ class CallManager {
 
         room.pipeline.create('WebRtcEndpoint', (error, incomingMedia) => {
           if (error) {
-            if (Object.keys(room.participants).length === 0) {
+            if (Array.from(room.participants.values()).length === 0) {
               room.pipeline.release();
             }
 
             return callback(error);
           }
 
-          incomingMedia.setMaxVideoRecvBandwidth(300);
-          incomingMedia.setMaxAudioRecvBandwidth(100);
           user.incomingMedia[sender.id] = incomingMedia;
 
-          const iceCandidateQueue = user.iceCandidateQueue[sender.id];
-          if (iceCandidateQueue) {
-            while (iceCandidateQueue.length) {
-              const message = iceCandidateQueue.shift();
-              incomingMedia.addIceCandidate(message.candidate);
-            }
-          }
-
-          incomingMedia.on('OnIceCandidate', event => {
-            const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
-            user.socket.emit('message', {
-              id: 'iceCandidate',
-              name: sender.id,
-              candidate
-            });
-          });
+          this.setConstraintsOnMediaEndpoint(incomingMedia);
+          this.processIceCandidateQueue(user.iceCandidateQueue[sender.id], incomingMedia);
+          this.setOnIceCandidateOnEndpoint(incomingMedia, user.socket, sender.id);
 
           connectWebRtcEndpoints(sender.outgoingMedia, incomingMedia, callback);
         });
@@ -211,6 +184,11 @@ class CallManager {
     } else {
       connectWebRtcEndpoints(sender.outgoingMedia, incoming, callback);
     }
+  }
+
+  setConstraintsOnMediaEndpoint(mediaEndpoint) {
+    mediaEndpoint.setMaxVideoRecvBandwidth(300);
+    mediaEndpoint.setMaxAudioRecvBandwidth(100);
   }
 
   addIceCandidate(socket, message, callback) {
@@ -265,7 +243,7 @@ class CallManager {
     console.log(socket.user.email, 'has left room', socket.room);
 
     const usersInRoom = room.participants;
-    delete usersInRoom[user.id];
+    room.participants.delete(user.id);
     user.outgoingMedia.release();
 
     for (let i in user.incomingMedia) {
@@ -278,8 +256,7 @@ class CallManager {
       name: user.name
     };
 
-    for (let i in usersInRoom) {
-      const otherUser = usersInRoom[i];
+    for (let otherUser of usersInRoom.values()) {
       if (otherUser.incomingMedia[user.id]) {
         otherUser.incomingMedia[user.id].release();
         delete otherUser.incomingMedia[user.id];
@@ -288,12 +265,32 @@ class CallManager {
       otherUser.socket.emit('message', data);
     }
 
-    if (Object.keys(room.participants).length === 0) {
+    if (Array.from(room.participants.values()).length === 0) {
       room.pipeline.release();
       this.rooms.delete(user.roomName);
     }
 
     socket.room = null;
+  }
+
+  processIceCandidateQueue(iceCandidateQueue, mediaEndpoint) {
+    if (iceCandidateQueue) {
+      while (iceCandidateQueue.length) {
+        const message = iceCandidateQueue.shift();
+        mediaEndpoint.addIceCandidate(message.candidate);
+      }
+    }
+  }
+
+  setOnIceCandidateOnEndpoint(mediaEndpoint, socket, userId) {
+    mediaEndpoint.on('OnIceCandidate', event => {
+      const candidate = kurento.register.complexTypes.IceCandidate(event.candidate);
+      socket.emit('message', {
+        id: 'iceCandidate',
+        name: userId,
+        candidate
+      });
+    });
   }
 }
 
