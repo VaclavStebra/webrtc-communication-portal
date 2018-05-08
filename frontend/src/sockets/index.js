@@ -6,7 +6,8 @@ import { addChatMessage } from '../modules/meeting/actions/chatMessagesActions';
 
 const participants = {};
 
-function Participant(name, socket) {
+function Participant(name, socket, isLocal = false) {
+  this.isLocal = isLocal;
   this.name = name;
   this.socket = socket;
   this.container = document.createElement('div');
@@ -98,7 +99,7 @@ function onExistingParticipants(socket, userId, message) {
     }
   };
 
-  const participant = new Participant(userId, socket);
+  const participant = new Participant(userId, socket, true);
   participants[userId] = participant;
   const video = participant.getVideoElement();
 
@@ -189,3 +190,20 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
 };
 
 export default setupSocket;
+
+function getLocalParticipantName() {
+  return Object.keys(participants).filter(name => participants[name].isLocal);
+}
+
+export function toggleAudio() {
+  const localParticipant = getLocalParticipantName()[0];
+  participants[localParticipant].rtcPeer.audioEnabled =
+    !participants[localParticipant].rtcPeer.audioEnabled;
+}
+
+export function toggleVideo() {
+  const localParticipant = getLocalParticipantName()[0];
+  participants[localParticipant].rtcPeer.videoEnabled =
+    !participants[localParticipant].rtcPeer.videoEnabled;
+}
+
