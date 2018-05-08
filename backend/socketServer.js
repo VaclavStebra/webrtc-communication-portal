@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 
 const constants = require('./config/constants');
 
+const CallManager = require('./utils/CallManager');
+const callManager = new CallManager();
+
 module.exports = function(server) {
   const io = require('socket.io')(server);
 
@@ -21,49 +24,51 @@ module.exports = function(server) {
     }
   });
 
-  let rooms = {};
-
-  io.on('connection', function (socket) {
-    socket.on('init', function (room) {
-      socket.room = room;
-      socket.join(room);
-      if (room in rooms) {
-        for (let otherSocket of rooms[room]) {
-          socket.emit('peer.connected', otherSocket.user);
+  io.on('connection', socket => {
+    socket.on('init', room => {
+      callManager.joinRoom(socket, room, err => {
+        if (err) {
+          console.error(`join Room error ${err}`);
         }
-        rooms[room].push(socket);
-        socket.to(room).emit('peer.connected', socket.user);
-        console.log(socket.user.email, 'has joined room', room);
-      } else {
-        rooms[room] = [socket];
-        console.log(socket.user.email, 'has created room', room);
-      }
+      });
     });
 
-    socket.on('chat message', function (msg) {
-      console.log('got message: ' + JSON.stringify(msg));
+    socket.on('chat message', message => {
+      console.log('got message: ' + JSON.stringify(message));
       console.log('sending message to room: '+ socket.room);
-      socket.to(socket.room).emit('chat message', msg);
+      socket.to(socket.room).emit('chat message', message);
     });
 
-    socket.on('disconnect', function () {
-      if ( ! socket.room) {
-        return;
+    socket.on('message', message => {
+      switch (message.id) {
+        case 'receiveVideoFrom': {
+          callManager.receiveVideoFrom(socket, message.sender, message.sdpOffer, (error) => {
+            if (error) {
+              console.error(error);
+            }
+          });
+          break;
+        }
+        case 'onIceCandidate': {
+          callManager.addIceCandidate(socket, message, (error) => {
+            if (error) {
+              console.error(error);
+            }
+          });
+          break;
+        }
+        default: {
+          socket.emit({ id: 'error', msg: `Invalid message ${message}`});
+        }
       }
-      socket.leave(socket.room);
-      socket.to(socket.room).emit('peer.disconnected', socket.user);
-      console.log(socket.user.email, 'has left room', socket.room);
+    });
 
-      const indexOfSocket = rooms[socket.room].indexOf(socket);
-      if (indexOfSocket > -1) {
-        rooms[socket.room].splice(indexOfSocket, 1);
-      }
-
-      if (rooms[socket.room].length === 0) {
-        delete rooms[socket.room];
-      }
-
-      socket.room = null;
+    socket.on('disconnect', () => {
+      callManager.leaveRoom(socket, error => {
+        if (error) {
+          console.error(error);
+        }
+      });
     });
   });
 };

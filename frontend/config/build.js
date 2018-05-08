@@ -47,6 +47,9 @@ const BUILD_CONFIG = {
     input: 'src/styles/app.scss',
     fileName: 'app.css'
   },
+  deps: {
+    kurentoUtils: 'bower_components/kurento-utils/js/kurento-utils.min.js'
+  },
   app: {
     input: 'src/index.html'
   },

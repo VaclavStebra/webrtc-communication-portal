@@ -8,6 +8,7 @@ import createHistory from 'history/createHashHistory';
 import rootReducer from '../reducers/index';
 import tokenStore from '../modules/user/middleware/tokenStore';
 import wsMiddleware from '../modules/meeting/middleware/wsMiddleware';
+import callActionsMiddleware from '../modules/meeting/middleware/callActionsMiddleware';
 
 const history = createHistory();
 const middleware = routerMiddleware(history);
@@ -17,6 +18,7 @@ const createStoreWithMiddleware = applyMiddleware(
   logger,
   tokenStore,
   wsMiddleware,
+  callActionsMiddleware,
   middleware
 )(createStore);
 

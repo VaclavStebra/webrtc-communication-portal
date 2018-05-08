@@ -83,7 +83,8 @@ export class Root extends React.Component {
                     window.socket = socketSetup(
                       this.props.dispatch,
                       this.props.token,
-                      match.params.id
+                      match.params.id,
+                      this.props.userId
                     );
                     this.props.addParticipant({ id: this.props.userId, email: this.props.email });
 
