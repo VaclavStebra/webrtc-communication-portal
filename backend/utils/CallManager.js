@@ -60,7 +60,29 @@ class CallManager {
 
       user.socket.to(user.roomName).emit('peer.connected', user.user);
 
-      callback(null, user);
+      room.composite.createHubPort((error, hubPort) => {
+        if (error) {
+          console.error(error);
+          return callback(error);
+        }
+
+        connectWebRtcEndpoints(outgoingMedia, hubPort, (error) => {
+          if (error) {
+            console.error(error);
+            return callback(error);
+          }
+
+          connectWebRtcEndpoints(hubPort, room.recorderEndpoint, (error) => {
+            if (error) {
+              console.error(error);
+              return callback(error);
+            }
+
+            return callback(null, user);
+          });
+        });
+
+      });
     });
   }
 
@@ -104,15 +126,35 @@ class CallManager {
           return callback(error);
         }
 
-        const room = {
-          name: roomName,
-          pipeline,
-          participants: new Map(),
-          kurentoClient
-        };
+        pipeline.create('Composite', (error, composite) => {
+          if (error) {
+            return callback(error);
+          }
 
-        this.rooms.set(roomName, room);
-        callback(null, room);
+          const recordParams = {
+            uri: `file:///tmp/${roomName}.webm`
+          };
+
+          pipeline.create('RecorderEndpoint', recordParams, (error, recorderEndpoint) => {
+            if (error) {
+              return callback(error);
+            }
+
+            recorderEndpoint.record();
+
+            const room = {
+              name: roomName,
+              pipeline,
+              participants: new Map(),
+              kurentoClient,
+              composite,
+              recorderEndpoint
+            };
+
+            this.rooms.set(roomName, room);
+            callback(null, room);
+          });
+        });
       });
     });
   }
@@ -226,7 +268,7 @@ class CallManager {
   }
 
   leaveRoom(socket, callback) {
-    const user = this.users.get(socket.id);
+    const user = this.users.get(socket.user.id);
 
     if ( ! user) {
       return;
@@ -266,6 +308,7 @@ class CallManager {
     }
 
     if (Array.from(room.participants.values()).length === 0) {
+      room.recorderEndpoint.stop();
       room.pipeline.release();
       this.rooms.delete(user.roomName);
     }
