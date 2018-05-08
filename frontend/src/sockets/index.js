@@ -87,7 +87,62 @@ function receiveVideoResponse(result) {
   });
 }
 
-function onExistingParticipants(socket, userId, message) {
+// function initiateScreenSharing(audioStream, socket, userId) {
+//   getScreenId((error, sourceId, screenConstraints) => {
+//     navigator.getUserMedia(screenConstraints, (screenStream) => {
+//       const constraints = {
+//         audio: true,
+//         video: {
+//           mandatory: {
+//             maxWidth: 320,
+//             maxFrameRate: 15,
+//             minFrameRate: 15
+//           }
+//         }
+//       };
+//
+//       const participant = new Participant(userId, socket, true);
+//       participants[userId] = participant;
+//       const video = participant.getVideoElement();
+//
+//       const options = {
+//         localVideo: video,
+//         videoStream: screenStream,
+//         audioStream: audioStream,
+//         onicecandidate: participant.onIceCandidate.bind(participant),
+//         sendSource: 'screen'
+//       };
+//
+//       participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
+//         options,
+//         function (error) {
+//           if (error) {
+//             return console.error(error);
+//           }
+//
+//           return this.generateOffer(participant.offerToReceiveVideo.bind(participant));
+//         }
+//       );
+//     }, (error) => {
+//       console.error(error);
+//     });
+//   });
+// }
+//
+// function shareScreen(socket, userId) {
+//   const constraints = {
+//     audio: true,
+//     video: false
+//   };
+//
+//   navigator.getUserMedia(constraints, (stream) => {
+//     initiateScreenSharing(stream, socket, userId);
+//   }, error => {
+//     console.error(error);
+//   })
+// }
+
+function shareWebCam(socket, userId) {
   const constraints = {
     audio: true,
     video: {
@@ -118,6 +173,10 @@ function onExistingParticipants(socket, userId, message) {
       return this.generateOffer(participant.offerToReceiveVideo.bind(participant));
     }
   );
+}
+
+function onExistingParticipants(socket, userId, message) {
+  shareWebCam(socket, userId);
 
   message.data.forEach(sender => receiveVideo(socket, sender));
 }
@@ -165,7 +224,7 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
         onNewParticipant(socket, message);
         break;
       case 'participantLeft':
-        onParticipantLeft();
+        onParticipantLeft(message);
         break;
       case 'receiveVideoAnswer':
         receiveVideoResponse(message);
@@ -206,4 +265,3 @@ export function toggleVideo() {
   participants[localParticipant].rtcPeer.videoEnabled =
     !participants[localParticipant].rtcPeer.videoEnabled;
 }
-

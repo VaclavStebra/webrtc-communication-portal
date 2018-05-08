@@ -28,8 +28,11 @@ gulp.task('style', () => gulp.src(BUILD_CONFIG.styles.input)
   .pipe(concat(BUILD_CONFIG.styles.fileName))
   .pipe(gulp.dest(BUILD_CONFIG.dist_dir)));
 
-gulp.task('deps', () => gulp.src(BUILD_CONFIG.deps.kurentoUtils)
-  .pipe(gulp.dest(BUILD_CONFIG.dist_dir)));
+gulp.task('deps', () =>
+  Object.keys(BUILD_CONFIG.deps).map(dep => {
+    gulp.src(BUILD_CONFIG.deps[dep])
+      .pipe(gulp.dest(BUILD_CONFIG.dist_dir))
+  }));
 
 gulp.task('app', () => gulp.src(BUILD_CONFIG.app.input)
   .pipe(gulp.dest(BUILD_CONFIG.dist_dir)));

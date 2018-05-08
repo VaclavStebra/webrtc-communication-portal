@@ -295,7 +295,7 @@ class CallManager {
 
     const data = {
       id: 'participantLeft',
-      name: user.name
+      name: user.id
     };
 
     for (let otherUser of usersInRoom.values()) {
