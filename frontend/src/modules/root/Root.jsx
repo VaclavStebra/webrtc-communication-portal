@@ -65,9 +65,6 @@ export class Root extends React.Component {
                   path="/meeting/create"
                   exact
                   render={() => {
-                    if (!this.props.isUserLoggedIn) {
-                      return <Redirect to="/login" />;
-                    }
                     this.props.createMeetingUIReset();
                     return <CreateMeetingPageContainer />;
                   }}

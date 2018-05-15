@@ -55,11 +55,38 @@ export class MeetingPage extends React.Component {
     );
   }
 
+  renderMessages() {
+    if (this.props.meeting.messages.length === 0) {
+      return (
+        <div>
+          <h2>No messages</h2>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <MessageList messages={this.props.meeting.messages} />
+      </div>
+    );
+  }
+
+  renderMeetingOverview() {
+    return (
+      <div>
+        <h2>Meeting already ended</h2>
+        {this.renderMessages()}
+      </div>
+    );
+  }
+
   render() {
-    console.log(this.props.meeting);
     if (this.props.meeting) {
       if (this.props.meeting.isPrivate && !this.props.user) {
         return <Redirect to="/login" />;
+      }
+
+      if (this.props.meeting.ended) {
+        return this.renderMeetingOverview();
       }
 
       return (

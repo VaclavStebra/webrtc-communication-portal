@@ -2,8 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import TextField from 'material-ui/TextField';
-import DatePicker from 'material-ui/DatePicker';
-import TimePicker from 'material-ui/TimePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import CreateMeetingForm from '../../../../src/modules/meeting/components/CreateMeetingForm';
@@ -28,26 +26,6 @@ describe('Meeting module', () => {
 
       expect(titleField.prop('hintText')).to.equal('Title of the meeting');
       expect(titleField.prop('floatingLabelText')).to.equal('Title');
-    });
-
-    it('has field for start and end time', () => {
-      const element = renderCreateMeetingForm();
-
-      const datePickers = element.find(DatePicker);
-      const timePickers = element.find(TimePicker);
-
-      expect(datePickers).to.have.length(2);
-      expect(timePickers).to.have.length(2);
-
-      const startDatePicker = datePickers.at(0);
-      const startTimePicker = timePickers.at(0);
-      const endDatePicker = datePickers.at(1);
-      const endTimePicker = timePickers.at(1);
-
-      expect(startDatePicker.prop('hintText')).to.equal('Start date');
-      expect(startTimePicker.prop('hintText')).to.equal('Start time');
-      expect(endDatePicker.prop('hintText')).to.equal('End date');
-      expect(endTimePicker.prop('hintText')).to.equal('End time');
     });
 
     it('has submit button', () => {

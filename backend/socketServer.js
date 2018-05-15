@@ -20,7 +20,7 @@ module.exports = function (server) {
     const meetingManager = new MeetingManager();
     const meeting = await meetingManager.getMeeting(socket.handshake.query.meetingId);
 
-    if (!meeting) {
+    if (!meeting || meeting.ended) {
       return next(new Error('Invalid meeting'));
     }
 
@@ -29,7 +29,6 @@ module.exports = function (server) {
         if (err) {
           return next(new Error('Auth error'));
         }
-        console.log(decoded);
         socket.user = decoded;
         next();
       });
@@ -65,10 +64,15 @@ module.exports = function (server) {
       });
     });
 
-    socket.on('chat message', message => {
-      console.log('got message: ' + JSON.stringify(message));
-      console.log('sending message to room: ' + socket.room);
+    socket.on('chat message', async message => {
       socket.to(socket.room).emit('chat message', message);
+
+      try {
+        const meetingManager = new MeetingManager();
+        await meetingManager.addMessageToMeeting(socket.room, message);
+      } catch (err) {
+        // ignore
+      }
     });
 
     socket.on('message', message => {

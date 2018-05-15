@@ -47,18 +47,19 @@ CreateMeetingPage.propTypes = {
   actionInProgress: PropTypes.bool,
   actionFailure: PropTypes.bool,
   onCreate: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired
+  token: PropTypes.string
 };
 
 CreateMeetingPage.defaultProps = {
   actionInProgress: false,
-  actionFailure: false
+  actionFailure: false,
+  token: ''
 };
 
 const mapStateToProps = state => ({
   actionInProgress: state.meeting.uiState.createInProgress,
   actionFailure: state.meeting.uiState.createFailure,
-  token: state.user.data.token
+  token: state.user.data ? state.user.data.token : ''
 });
 
 const mapDispatchToProps = dispatch => ({

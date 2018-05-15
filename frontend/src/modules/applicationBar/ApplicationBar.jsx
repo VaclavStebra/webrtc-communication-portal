@@ -9,6 +9,8 @@ import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
+import { CREATE_MEETING_PAGE } from '../../constants/links';
+
 export default class ApplicationBar extends React.Component {
   getIconElementRight() {
     if (!this.props.isUserLoggedIn) {
@@ -27,6 +29,12 @@ export default class ApplicationBar extends React.Component {
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
+        <MenuItem
+          primaryText="Create meeting"
+          onClick={() => {
+            window.location.replace(CREATE_MEETING_PAGE);
+          }}
+        />
         <MenuItem
           primaryText="Sign out"
           onClick={this.props.onLogout}

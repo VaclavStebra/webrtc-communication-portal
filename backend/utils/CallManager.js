@@ -2,6 +2,8 @@
 
 const kurento = require('kurento-client');
 
+const MeetingManager = require('../modules/meeting/MeetingManager');
+
 const constants = require('../config/constants');
 
 class CallManager {
@@ -267,7 +269,7 @@ class CallManager {
     }
   }
 
-  leaveRoom(socket, callback) {
+  async leaveRoom(socket, callback) {
     const user = this.users.get(socket.user.id);
 
     if ( ! user) {
@@ -310,6 +312,13 @@ class CallManager {
       room.recorderEndpoint.stop();
       room.pipeline.release();
       this.rooms.delete(user.roomName);
+
+      const meetingManager = new MeetingManager();
+      try {
+        await meetingManager.endMeeting(socket.room);
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     const oldRoom = socket.room;
