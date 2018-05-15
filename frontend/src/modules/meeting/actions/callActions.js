@@ -11,3 +11,9 @@ export function toggleVideo() {
     type: types.TOGGLE_VIDEO
   };
 }
+
+export function toggleScreenShare() {
+  return {
+    type: types.TOGGLE_SCREENSHARE
+  };
+}

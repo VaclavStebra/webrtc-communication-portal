@@ -48,7 +48,8 @@ const BUILD_CONFIG = {
     fileName: 'app.css'
   },
   deps: {
-    kurentoUtils: 'bower_components/kurento-utils/js/kurento-utils.min.js'
+    kurentoUtils: 'bower_components/kurento-utils/js/kurento-utils.min.js',
+    getScreenId: 'vendor/getScreenId.js'
   },
   app: {
     input: 'src/index.html'

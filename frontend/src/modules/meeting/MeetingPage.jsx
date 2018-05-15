@@ -12,7 +12,7 @@ import MessageList from './components/MessageList';
 import AddMessageForm from './components/AddMessageForm';
 
 import { addChatMessage, sendChatMessage } from './actions/chatMessagesActions';
-import { toggleAudio, toggleVideo } from './actions/callActions';
+import { toggleAudio, toggleVideo, toggleScreenShare } from './actions/callActions';
 
 export class MeetingPage extends React.Component {
   constructor(props) {
@@ -38,6 +38,12 @@ export class MeetingPage extends React.Component {
           label={this.props.videoEnabled ? 'Disable video' : 'Enable video'}
           primary
           onClick={this.props.toggleVideo}
+        />
+        &nbsp;
+        <RaisedButton
+          label={this.props.screenSharingEnabled ? 'Disable screen sharing' : 'Enable screen sharing'}
+          primary
+          onClick={this.props.toggleScreenSharing}
         />
       </div>
     );
@@ -73,13 +79,16 @@ MeetingPage.propTypes = {
   onAddMessage: PropTypes.func.isRequired,
   audioEnabled: PropTypes.bool,
   videoEnabled: PropTypes.bool,
+  screenSharingEnabled: PropTypes.bool,
   toggleAudio: PropTypes.func.isRequired,
-  toggleVideo: PropTypes.func.isRequired
+  toggleVideo: PropTypes.func.isRequired,
+  toggleScreenSharing: PropTypes.func.isRequired
 };
 
 MeetingPage.defaultProps = {
   audioEnabled: true,
-  videoEnabled: true
+  videoEnabled: true,
+  screenSharingEnabled: false
 };
 
 const mapStateToProps = state => ({
@@ -87,7 +96,8 @@ const mapStateToProps = state => ({
   participants: state.participants,
   messages: state.messages,
   audioEnabled: state.callState.audioEnabled,
-  videoEnabled: state.callState.videoEnabled
+  videoEnabled: state.callState.videoEnabled,
+  screenSharingEnabled: state.callState.screenShareEnabled
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -100,6 +110,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleVideo: () => {
     dispatch(toggleVideo());
+  },
+  toggleScreenSharing: () => {
+    dispatch(toggleScreenShare());
   }
 });
 

@@ -5,6 +5,9 @@ import { addParticipant, removeParticipant } from '../modules/meeting/actions/pa
 import { addChatMessage } from '../modules/meeting/actions/chatMessagesActions';
 
 const participants = {};
+let thisUserSocket = null;
+let isScreenSharing = false;
+let thisUserId = null;
 
 function Participant(name, socket, isLocal = false) {
   this.isLocal = isLocal;
@@ -87,7 +90,51 @@ function receiveVideoResponse(result) {
   });
 }
 
-function onExistingParticipants(socket, userId, message) {
+function initiateScreenSharing(audioStream, socket, userId) {
+  getScreenId((error, sourceId, screenConstraints) => {
+    navigator.getUserMedia(screenConstraints, (screenStream) => {
+      const participant = new Participant(userId, socket, true);
+      participants[userId] = participant;
+      const video = participant.getVideoElement();
+
+      const options = {
+        localVideo: video,
+        videoStream: screenStream,
+        audioStream,
+        onicecandidate: participant.onIceCandidate.bind(participant),
+        sendSource: 'screen'
+      };
+
+      participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
+        options,
+        function (err) {
+          if (err) {
+            return console.error(err);
+          }
+
+          return this.generateOffer(participant.offerToReceiveVideo.bind(participant));
+        }
+      );
+    }, (err) => {
+      console.error(err);
+    });
+  });
+}
+
+function shareScreen(socket, userId) {
+  const constraints = {
+    audio: true,
+    video: false
+  };
+
+  navigator.getUserMedia(constraints, (stream) => {
+    initiateScreenSharing(stream, socket, userId);
+  }, (error) => {
+    console.error(error);
+  });
+}
+
+function shareWebCam(socket, userId) {
   const constraints = {
     audio: true,
     video: {
@@ -118,6 +165,14 @@ function onExistingParticipants(socket, userId, message) {
       return this.generateOffer(participant.offerToReceiveVideo.bind(participant));
     }
   );
+}
+
+function onExistingParticipants(socket, userId, message) {
+  if (isScreenSharing) {
+    shareScreen(socket, userId);
+  } else {
+    shareWebCam(socket, userId);
+  }
 
   message.data.forEach(sender => receiveVideo(socket, sender));
 }
@@ -130,11 +185,15 @@ function onParticipantLeft(message) {
 
 
 const setupSocket = (dispatch, token, meetingId, userId) => {
+  thisUserId = userId;
+
   const socket = io.connect(API_URL, {
     query: {
       token
     }
   });
+
+  thisUserSocket = socket;
 
   socket.emit('init', meetingId);
 
@@ -165,7 +224,7 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
         onNewParticipant(socket, message);
         break;
       case 'participantLeft':
-        onParticipantLeft();
+        onParticipantLeft(message);
         break;
       case 'receiveVideoAnswer':
         receiveVideoResponse(message);
@@ -195,6 +254,13 @@ function getLocalParticipantName() {
   return Object.keys(participants).filter(name => participants[name].isLocal);
 }
 
+function disposeAllParticipants() {
+  Object.keys(participants).forEach((name) => {
+    participants[name].dispose();
+    delete participants[name];
+  });
+}
+
 export function toggleAudio() {
   const localParticipant = getLocalParticipantName()[0];
   participants[localParticipant].rtcPeer.audioEnabled =
@@ -207,3 +273,16 @@ export function toggleVideo() {
     !participants[localParticipant].rtcPeer.videoEnabled;
 }
 
+export function toggleScreenSharing() {
+  disposeAllParticipants();
+
+  isScreenSharing = !isScreenSharing;
+
+  thisUserSocket.emit(
+    'message',
+    {
+      id: 'changeSource',
+      sender: thisUserId
+    }
+  );
+}

@@ -57,6 +57,20 @@ module.exports = function(server) {
           });
           break;
         }
+        case 'changeSource': {
+          callManager.leaveRoom(socket, (error, oldRoom) => {
+            if (error) {
+              console.error(error);
+            }
+
+            callManager.joinRoom(socket, oldRoom, err => {
+              if (err) {
+                console.error(`join Room error ${err}`);
+              }
+            });
+          });
+          break;
+        }
         default: {
           socket.emit({ id: 'error', msg: `Invalid message ${message}`});
         }

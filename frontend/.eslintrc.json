@@ -6,7 +6,8 @@
   },
   "globals": {
     "expect": true,
-    "kurentoUtils": true
+    "kurentoUtils": true,
+    "getScreenId": true
   },
   "rules": {
     "react/jsx-filename-extension": [
