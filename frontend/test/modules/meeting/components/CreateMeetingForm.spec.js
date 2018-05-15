@@ -17,20 +17,17 @@ function renderCreateMeetingForm(actionInProgress = false) {
 
 describe('Meeting module', () => {
   describe('CreateMeetingForm', () => {
-    it('has fields for title and participants', () => {
+    it('has fields for title', () => {
       const element = renderCreateMeetingForm();
 
       const textFields = element.find(TextField);
 
-      expect(textFields).to.have.length(2);
+      expect(textFields).to.have.length(1);
 
       const titleField = textFields.at(0);
-      const participantsField = textFields.at(1);
 
       expect(titleField.prop('hintText')).to.equal('Title of the meeting');
       expect(titleField.prop('floatingLabelText')).to.equal('Title');
-      expect(participantsField.prop('hintText')).to.equal('Participants of the meeting');
-      expect(participantsField.prop('floatingLabelText')).to.equal('Participants');
     });
 
     it('has field for start and end time', () => {

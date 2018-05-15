@@ -9,7 +9,7 @@ const MeetingSchema = new Schema({
   organizer: { type: Schema.Types.ObjectId, ref: 'User'},
   startDate: Date,
   endDate: Date,
-  participants: []
+  private: Boolean
 });
 
 mongoose.model('Meeting', MeetingSchema);

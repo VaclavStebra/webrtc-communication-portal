@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   data: {
-    meetings: []
+    meeting: null
   },
   uiState: {
     fetchInProgress: false,
@@ -46,7 +46,7 @@ function handleFetchSuccess(state, action) {
 
   return {
     data: {
-      meetings: action.meetings
+      meeting: action.meeting
     },
     uiState
   };
@@ -106,11 +106,11 @@ function handleCreateUIReset(state) {
 
 export function meetingReducer(state = initialState, action) {
   switch (action.type) {
-    case types.MEETINGS_FETCH_START:
+    case types.MEETING_FETCH_START:
       return handleFetchStart(state);
-    case types.MEETINGS_FETCH_FAILURE:
+    case types.MEETING_FETCH_FAILURE:
       return handleFetchFailure(state);
-    case types.MEETINGS_FETCH_SUCCESS:
+    case types.MEETING_FETCH_SUCCESS:
       return handleFetchSuccess(state, action);
     case types.MEETING_CREATE_START:
       return handleCreateStart(state);

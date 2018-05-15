@@ -1,31 +1,63 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
 
 const constants = require('./config/constants');
 
+const MeetingManager = require('./modules/meeting/MeetingManager');
 const CallManager = require('./utils/CallManager');
 const callManager = new CallManager();
 
-module.exports = function(server) {
+module.exports = function (server) {
   const io = require('socket.io')(server);
 
-  io.use((socket, next) => {
-    if (socket.handshake.query && socket.handshake.query.token) {
+  io.use(async (socket, next) => {
+    if (!socket.handshake.query) {
+      return next(new Error('Auth error'));
+    }
+
+    const meetingManager = new MeetingManager();
+    const meeting = await meetingManager.getMeeting(socket.handshake.query.meetingId);
+
+    if (!meeting) {
+      return next(new Error('Invalid meeting'));
+    }
+
+    if (meeting.private) {
       jwt.verify(socket.handshake.query.token, constants.JWT_SECRET, (err, decoded) => {
         if (err) {
           return next(new Error('Auth error'));
         }
+        console.log(decoded);
         socket.user = decoded;
         next();
       });
     } else {
-      next(new Error('Auth error'));
+      if (socket.handshake.query.token) {
+        jwt.verify(socket.handshake.query.token, constants.JWT_SECRET, (err, decoded) => {
+          if (err) {
+            return next(new Error('Auth error'));
+          }
+          socket.user = decoded;
+          next();
+        });
+      } else {
+        const id = uuid.v4();
+        socket.user = {
+          id,
+          email: `anonymous-${id}`
+        };
+        next();
+      }
     }
   });
 
   io.on('connection', socket => {
     socket.on('init', room => {
+      if (socket.user.email.startsWith('anonymous-')) {
+        socket.emit('setUserId', socket.user.id);
+      }
       callManager.joinRoom(socket, room, err => {
         if (err) {
           console.error(`join Room error ${err}`);
@@ -35,7 +67,7 @@ module.exports = function(server) {
 
     socket.on('chat message', message => {
       console.log('got message: ' + JSON.stringify(message));
-      console.log('sending message to room: '+ socket.room);
+      console.log('sending message to room: ' + socket.room);
       socket.to(socket.room).emit('chat message', message);
     });
 
@@ -72,7 +104,7 @@ module.exports = function(server) {
           break;
         }
         default: {
-          socket.emit({ id: 'error', msg: `Invalid message ${message}`});
+          socket.emit({ id: 'error', msg: `Invalid message ${message}` });
         }
       }
     });

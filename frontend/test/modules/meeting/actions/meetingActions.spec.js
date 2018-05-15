@@ -10,43 +10,43 @@ import * as types from '../../../../src/modules/meeting/constants/ActionTypes';
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-function mockFetchMeetings() {
-  fetchMock
-    .getOnce(
-      `${API_URL}/meetings`,
-      {
-        body: {
-          meetings: []
-        },
-        headers: {
-          'content-type': 'application/json'
-        }
-      }
-    );
-}
-
-function mockFetchMeetingsFailure() {
-  fetchMock
-    .getOnce(
-      `${API_URL}/meetings`,
-      500
-    );
-}
-
-function mockGetMeetingsWrongCredentials() {
-  fetchMock
-    .getOnce(
-      `${API_URL}/meetings`,
-      {
-        body: {
-          error: 'Invalid credentials'
-        },
-        headers: {
-          'content-type': 'application/json'
-        }
-      }
-    );
-}
+// function mockFetchMeeting() {
+//   fetchMock
+//     .getOnce(
+//       `${API_URL}/meetings/fetch`,
+//       {
+//         body: {
+//           meeting: {}
+//         },
+//         headers: {
+//           'content-type': 'application/json'
+//         }
+//       }
+//     );
+// }
+//
+// function mockFetchMeetingFailure() {
+//   fetchMock
+//     .getOnce(
+//       `${API_URL}/meetings/fetch`,
+//       500
+//     );
+// }
+//
+// function mockGetMeetingWrongCredentials() {
+//   fetchMock
+//     .getOnce(
+//       `${API_URL}/meetings/fetch`,
+//       {
+//         body: {
+//           error: 'Invalid credentials'
+//         },
+//         headers: {
+//           'content-type': 'application/json'
+//         }
+//       }
+//     );
+// }
 
 function mockPostCreateMeeting() {
   fetchMock
@@ -93,79 +93,79 @@ describe('Meeting module', () => {
   });
 
   describe('Meeting actions', () => {
-    describe('Fetching meetings', () => {
+    describe('Fetching meeting', () => {
       it('creates an action for fetch start', () => {
         const expectedAction = {
-          type: types.MEETINGS_FETCH_START
+          type: types.MEETING_FETCH_START
         };
 
-        expect(actions.meetingsFetchStart()).to.deep.equal(expectedAction);
+        expect(actions.meetingFetchStart()).to.deep.equal(expectedAction);
       });
 
       it('creates an action for fetch failure', () => {
         const expectedAction = {
-          type: types.MEETINGS_FETCH_FAILURE
+          type: types.MEETING_FETCH_FAILURE
         };
 
-        expect(actions.meetingsFetchFailure()).to.deep.equal(expectedAction);
+        expect(actions.meetingFetchFailure()).to.deep.equal(expectedAction);
       });
 
       it('creates an action for fetch success', () => {
         const expectedAction = {
-          type: types.MEETINGS_FETCH_SUCCESS,
-          meetings: []
+          type: types.MEETING_FETCH_SUCCESS,
+          meeting: {}
         };
 
-        expect(actions.meetingsFetchSuccess([])).to.deep.equal(expectedAction);
+        expect(actions.meetingFetchSuccess({})).to.deep.equal(expectedAction);
       });
 
-      it('creates MEETINGS_FETCH_SUCCESS after successful fetch', () => {
-        mockFetchMeetings();
-
-        const expectedActions = [
-          { type: types.MEETINGS_FETCH_START },
-          { type: types.MEETINGS_FETCH_SUCCESS, meetings: [] }
-        ];
-
-        const store = mockStore({});
-
-        return store.dispatch(actions.fetchMeetings())
-          .then(() => {
-            expect(store.getActions()).to.deep.equal(expectedActions);
-          });
-      });
-
-      it('creates MEETINGS_FETCH_FAILURE after failed fetch', () => {
-        mockFetchMeetingsFailure();
-
-        const expectedActions = [
-          { type: types.MEETINGS_FETCH_START },
-          { type: types.MEETINGS_FETCH_FAILURE }
-        ];
-
-        const store = mockStore({});
-
-        return store.dispatch(actions.fetchMeetings())
-          .then(() => {
-            expect(store.getActions()).to.deep.equal(expectedActions);
-          });
-      });
-
-      it('creates MEETINGS_FETCH_FAILURE after fetch failed with custom error', () => {
-        mockGetMeetingsWrongCredentials();
-
-        const expectedActions = [
-          { type: types.MEETINGS_FETCH_START },
-          { type: types.MEETINGS_FETCH_FAILURE }
-        ];
-
-        const store = mockStore({});
-
-        return store.dispatch(actions.fetchMeetings())
-          .then(() => {
-            expect(store.getActions()).to.deep.equal(expectedActions);
-          });
-      });
+      // it('creates MEETING_FETCH_SUCCESS after successful fetch', () => {
+      //   mockFetchMeeting();
+      //
+      //   const expectedActions = [
+      //     { type: types.MEETING_FETCH_START },
+      //     { type: types.MEETING_FETCH_SUCCESS, meeting: {} }
+      //   ];
+      //
+      //   const store = mockStore({});
+      //
+      //   return store.dispatch(actions.fetchMeeting())
+      //     .then(() => {
+      //       expect(store.getActions()).to.deep.equal(expectedActions);
+      //     });
+      // });
+      //
+      // it('creates MEETINGS_FETCH_FAILURE after failed fetch', () => {
+      //   mockFetchMeetingFailure();
+      //
+      //   const expectedActions = [
+      //     { type: types.MEETING_FETCH_START },
+      //     { type: types.MEETING_FETCH_FAILURE }
+      //   ];
+      //
+      //   const store = mockStore({});
+      //
+      //   return store.dispatch(actions.fetchMeeting())
+      //     .then(() => {
+      //       expect(store.getActions()).to.deep.equal(expectedActions);
+      //     });
+      // });
+      //
+      // it('creates MEETING_FETCH_FAILURE after fetch failed with custom error', () => {
+      //   mockGetMeetingWrongCredentials();
+      //
+      //   const expectedActions = [
+      //     { type: types.MEETING_FETCH_START },
+      //     { type: types.MEETING_FETCH_FAILURE }
+      //   ];
+      //
+      //   const store = mockStore({});
+      //
+      //   return store.dispatch(actions.fetchMeeting())
+      //     .then(() => {
+      //       expect(store.getActions()).to.deep.equal(expectedActions);
+      //     });
+      // });
     });
 
     describe('Meeting creation', () => {
