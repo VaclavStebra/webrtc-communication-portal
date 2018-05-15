@@ -282,7 +282,6 @@ class CallManager {
 
     socket.leave(socket.room);
     socket.to(socket.room).emit('peer.disconnected', socket.user);
-    console.log(socket.user.email, 'has left room', socket.room);
 
     const usersInRoom = room.participants;
     room.participants.delete(user.id);
@@ -313,7 +312,9 @@ class CallManager {
       this.rooms.delete(user.roomName);
     }
 
+    const oldRoom = socket.room;
     socket.room = null;
+    callback(null, oldRoom);
   }
 
   processIceCandidateQueue(iceCandidateQueue, mediaEndpoint) {
