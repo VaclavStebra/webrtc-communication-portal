@@ -11,16 +11,22 @@ export default class CreateMeetingForm extends React.Component {
 
     this.state = {
       title: '',
-      isPrivate: true
+      isPrivate: true,
+      participants: ''
     };
 
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleIsPrivateChange = this.handleIsPrivateChange.bind(this);
+    this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleTitleChange(event, title) {
     this.setState({ title });
+  }
+
+  handleParticipantsChange(event, participants) {
+    this.setState({ participants });
   }
 
   handleIsPrivateChange(event, isChecked) {
@@ -29,12 +35,13 @@ export default class CreateMeetingForm extends React.Component {
 
   handleSubmit() {
     const {
-      title, isPrivate
+      title, isPrivate, participants
     } = this.state;
 
     this.props.onSubmit({
       title,
-      isPrivate
+      isPrivate,
+      participants: isPrivate ? participants : ''
     }, this.props.token);
   }
 
@@ -55,6 +62,14 @@ export default class CreateMeetingForm extends React.Component {
             onToggle={this.handleIsPrivateChange}
           />
         </div>
+        <br />
+        <TextField
+          hintText="Participants of the meeting"
+          floatingLabelText="Participants"
+          disabled={!this.state.isPrivate}
+          value={this.state.participants}
+          onChange={this.handleParticipantsChange}
+        />
         <div className="top-separator">
           <RaisedButton
             label="Plan new meeting"

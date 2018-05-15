@@ -79,10 +79,22 @@ export class MeetingPage extends React.Component {
     );
   }
 
+  renderNotAuthorized() {
+    return (
+      <div>
+        <h2>You are not authorized to join this meeting</h2>
+      </div>
+    );
+  }
+
   render() {
     if (this.props.meeting) {
-      if (this.props.meeting.isPrivate && !this.props.user) {
+      if (this.props.meeting.isPrivate && !this.props.isUserLoggedIn) {
         return <Redirect to="/login" />;
+      }
+
+      if (this.props.meeting && this.props.meeting.participants.indexOf(this.props.user) === -1) {
+        return this.renderNotAuthorized();
       }
 
       if (this.props.meeting.ended) {
@@ -118,6 +130,7 @@ export class MeetingPage extends React.Component {
 }
 
 MeetingPage.propTypes = {
+  isUserLoggedIn: PropTypes.bool.isRequired,
   meetingId: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
   participants: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -141,6 +154,7 @@ MeetingPage.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+  isUserLoggedIn: !!state.user.data,
   user: state.user.data ? state.user.data.email : 'anonymous',
   participants: state.participants,
   messages: state.messages,

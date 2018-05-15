@@ -29,6 +29,12 @@ module.exports = function (server) {
         if (err) {
           return next(new Error('Auth error'));
         }
+
+        if (meeting.participants.indexOf(decoded.email) === -1) {
+          // not authorized to join
+          return next(new Error('Auth error'));
+        }
+
         socket.user = decoded;
         next();
       });

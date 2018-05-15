@@ -12,7 +12,8 @@ class MeetingManager {
       organizer: params.userId,
       ended: false,
       private: params.private,
-      messages: []
+      messages: [],
+      participants: params.participants
     });
 
     return meeting.save();
@@ -21,7 +22,7 @@ class MeetingManager {
   getMeeting(id) {
     const options = {
       criteria: { _id: id },
-      select: 'title startDate ended private messages'
+      select: 'title startDate ended private messages participants'
     };
 
     return Meeting.findOne(options.criteria).select(options.select).exec()
