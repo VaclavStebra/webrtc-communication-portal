@@ -62,29 +62,31 @@ class CallManager {
 
       user.socket.to(user.roomName).emit('peer.connected', user.user);
 
-      room.composite.createHubPort((error, hubPort) => {
-        if (error) {
-          console.error(error);
-          return callback(error);
-        }
-
-        connectWebRtcEndpoints(outgoingMedia, hubPort, (error) => {
+      if (room.composite) {
+        room.composite.createHubPort((error, hubPort) => {
           if (error) {
             console.error(error);
             return callback(error);
           }
 
-          connectWebRtcEndpoints(hubPort, room.recorderEndpoint, (error) => {
+          connectWebRtcEndpoints(outgoingMedia, hubPort, (error) => {
             if (error) {
               console.error(error);
               return callback(error);
             }
 
-            return callback(null, user);
-          });
-        });
+            connectWebRtcEndpoints(hubPort, room.recorderEndpoint, (error) => {
+              if (error) {
+                console.error(error);
+                return callback(error);
+              }
 
-      });
+              return callback(null, user);
+            });
+          });
+
+        });
+      }
     });
   }
 
@@ -117,7 +119,10 @@ class CallManager {
     }
   }
 
-  createNewRoom(roomName, callback) {
+  async createNewRoom(roomName, callback) {
+    const meetingManager = new MeetingManager();
+    const meeting = await meetingManager.getMeeting(roomName);
+
     getKurentoClient((error, kurentoClient) => {
       if (error) {
         return callback(error);
@@ -128,35 +133,47 @@ class CallManager {
           return callback(error);
         }
 
-        pipeline.create('Composite', (error, composite) => {
-          if (error) {
-            return callback(error);
-          }
-
-          const recordParams = {
-            uri: `file:///tmp/${roomName}.webm`
-          };
-
-          pipeline.create('RecorderEndpoint', recordParams, (error, recorderEndpoint) => {
+        if (meeting.record) {
+          pipeline.create('Composite', (error, composite) => {
             if (error) {
               return callback(error);
             }
 
-            recorderEndpoint.record();
-
-            const room = {
-              name: roomName,
-              pipeline,
-              participants: new Map(),
-              kurentoClient,
-              composite,
-              recorderEndpoint
+            const recordParams = {
+              uri: `file:///tmp/${roomName}.webm`
             };
 
-            this.rooms.set(roomName, room);
-            callback(null, room);
+            pipeline.create('RecorderEndpoint', recordParams, (error, recorderEndpoint) => {
+              if (error) {
+                return callback(error);
+              }
+
+              recorderEndpoint.record();
+
+              const room = {
+                name: roomName,
+                pipeline,
+                participants: new Map(),
+                kurentoClient,
+                composite,
+                recorderEndpoint
+              };
+
+              this.rooms.set(roomName, room);
+              callback(null, room);
+            });
           });
-        });
+        } else {
+          const room = {
+            name: roomName,
+            pipeline,
+            participants: new Map(),
+            kurentoClient
+          };
+
+          this.rooms.set(roomName, room);
+          callback(null, room);
+        }
       });
     });
   }

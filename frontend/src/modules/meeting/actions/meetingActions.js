@@ -66,14 +66,14 @@ export function fetchMeeting(id) {
 
 export function createMeeting(meetingParams, token) {
   const {
-    title, isPrivate, participants
+    title, isPrivate, participants, record
   } = meetingParams;
 
   return (dispatch) => {
     dispatch(meetingCreateStart());
 
     return post('/meetings/create', {
-      title, isPrivate, participants
+      title, isPrivate, participants, record
     }, token)
       .then((body) => {
         if (body.error) {

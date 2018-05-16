@@ -27,7 +27,8 @@ router.get(
           ended: meeting.ended,
           isPrivate: meeting.private,
           messages: meeting.messages,
-          participants: meeting.participants
+          participants: meeting.participants,
+          record: meeting.record
         }
       });
     } else {
@@ -42,7 +43,7 @@ router.post(
   '/create',
   passport.authenticate('jwt', { session: false }),
   wrapAsync(async function (req, res, next) {
-    const { title, isPrivate, participants } = req.body;
+    const { title, isPrivate, participants, record } = req.body;
 
     if (!title) {
       return next({ status: 422, message: 'Invalid params' });
@@ -57,7 +58,8 @@ router.post(
       title,
       private: isPrivate,
       userId: req.user._id,
-      participants: participantsEmails
+      participants: participantsEmails,
+      record
     });
 
     return res.json({ message: 'Meeting created', id: meeting._id });
