@@ -15,6 +15,7 @@ import AddMessageForm from './components/AddMessageForm';
 import { addChatMessage, sendChatMessage } from './actions/chatMessagesActions';
 import { toggleAudio, toggleVideo, toggleScreenShare } from './actions/callActions';
 import { fetchMeeting } from './actions/meetingActions';
+import { MEETING_RECORDING_BASE } from '../../constants/links';
 
 export class MeetingPage extends React.Component {
   constructor(props) {
@@ -70,10 +71,22 @@ export class MeetingPage extends React.Component {
     );
   }
 
+  renderRecordingLink() {
+    if (this.props.meeting.record) {
+      return (
+        <div>
+          <a href={`${MEETING_RECORDING_BASE}${this.props.meetingId}`}>Meeting recording</a>
+        </div>
+      );
+    }
+    return null;
+  }
+
   renderMeetingOverview() {
     return (
       <div>
         <h2>Meeting already ended</h2>
+        {this.renderRecordingLink()}
         {this.renderMessages()}
       </div>
     );
