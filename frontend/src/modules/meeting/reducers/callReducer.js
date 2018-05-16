@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   audioEnabled: true,
-  videoEnabled: true,
+  videoEnabled: false,
   screenShareEnabled: false
 };
 

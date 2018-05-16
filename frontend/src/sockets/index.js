@@ -6,6 +6,8 @@ import { addChatMessage } from '../modules/meeting/actions/chatMessagesActions';
 
 const participants = {};
 let thisUserSocket = null;
+
+let isCameraEnabled = false;
 let isScreenSharing = false;
 let thisUserId = null;
 
@@ -134,16 +136,18 @@ function shareScreen(socket, userId) {
   });
 }
 
-function shareWebCam(socket, userId) {
+function startCall(socket, userId) {
+  const videoConstraints = {
+    mandatory: {
+      maxWidth: 320,
+      maxFrameRate: 15,
+      minFrameRate: 15
+    }
+  };
+
   const constraints = {
     audio: true,
-    video: {
-      mandatory: {
-        maxWidth: 320,
-        maxFrameRate: 15,
-        minFrameRate: 15
-      }
-    }
+    video: isCameraEnabled ? videoConstraints : false
   };
 
   const participant = new Participant(userId, socket, true);
@@ -171,7 +175,7 @@ function onExistingParticipants(socket, userId, message) {
   if (isScreenSharing) {
     shareScreen(socket, userId);
   } else {
-    shareWebCam(socket, userId);
+    startCall(socket, userId);
   }
 
   message.data.forEach(sender => receiveVideo(socket, sender));
@@ -266,6 +270,20 @@ function disposeAllParticipants() {
   });
 }
 
+function enableCamera() {
+  disposeAllParticipants();
+
+  isCameraEnabled = true;
+
+  thisUserSocket.emit(
+    'message',
+    {
+      id: 'changeSource',
+      sender: thisUserId
+    }
+  );
+}
+
 export function toggleAudio() {
   const localParticipant = getLocalParticipantName()[0];
   participants[localParticipant].rtcPeer.audioEnabled =
@@ -273,9 +291,13 @@ export function toggleAudio() {
 }
 
 export function toggleVideo() {
-  const localParticipant = getLocalParticipantName()[0];
-  participants[localParticipant].rtcPeer.videoEnabled =
-    !participants[localParticipant].rtcPeer.videoEnabled;
+  if (!isCameraEnabled) {
+    enableCamera();
+  } else {
+    const localParticipant = getLocalParticipantName()[0];
+    participants[localParticipant].rtcPeer.videoEnabled =
+      !participants[localParticipant].rtcPeer.videoEnabled;
+  }
 }
 
 export function toggleScreenSharing() {
