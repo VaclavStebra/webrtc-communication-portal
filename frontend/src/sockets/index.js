@@ -189,13 +189,18 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
 
   const socket = io.connect(API_URL, {
     query: {
-      token
+      token,
+      meetingId
     }
   });
 
   thisUserSocket = socket;
 
   socket.emit('init', meetingId);
+
+  socket.on('setUserId', (id) => {
+    thisUserId = id;
+  });
 
   socket.on('peer.connected', (user) => {
     dispatch(addParticipant(user));
@@ -218,7 +223,7 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
 
     switch (message.id) {
       case 'existingParticipants':
-        onExistingParticipants(socket, userId, message);
+        onExistingParticipants(socket, thisUserId, message);
         break;
       case 'newParticipantArrived':
         onNewParticipant(socket, message);

@@ -5,22 +5,22 @@ import * as types from '../constants/ActionTypes';
 
 import { get, post } from '../../../utils/fetchHelpers';
 
-export function meetingsFetchStart() {
+export function meetingFetchStart() {
   return {
-    type: types.MEETINGS_FETCH_START
+    type: types.MEETING_FETCH_START
   };
 }
 
-export function meetingsFetchFailure() {
+export function meetingFetchFailure() {
   return {
-    type: types.MEETINGS_FETCH_FAILURE
+    type: types.MEETING_FETCH_FAILURE
   };
 }
 
-export function meetingsFetchSuccess(meetings) {
+export function meetingFetchSuccess(meeting) {
   return {
-    type: types.MEETINGS_FETCH_SUCCESS,
-    meetings
+    type: types.MEETING_FETCH_SUCCESS,
+    meeting
   };
 }
 
@@ -48,32 +48,32 @@ export function createUIReset() {
   };
 }
 
-export function fetchMeetings() {
+export function fetchMeeting(id) {
   return (dispatch) => {
-    dispatch(meetingsFetchStart());
+    dispatch(meetingFetchStart());
 
-    return get('/meetings')
+    return get('/meetings/fetch', null, { id })
       .then((body) => {
         if (body.error) {
-          dispatch(meetingsFetchFailure());
+          dispatch(meetingFetchFailure());
         } else {
-          dispatch(meetingsFetchSuccess(body.meetings));
+          dispatch(meetingFetchSuccess(body.meeting));
         }
       })
-      .catch(() => dispatch(meetingsFetchFailure()));
+      .catch(() => dispatch(meetingFetchFailure()));
   };
 }
 
 export function createMeeting(meetingParams, token) {
   const {
-    title, startDate, endDate, participants
+    title, isPrivate, participants
   } = meetingParams;
 
   return (dispatch) => {
     dispatch(meetingCreateStart());
 
     return post('/meetings/create', {
-      title, startDate, endDate, participants
+      title, isPrivate, participants
     }, token)
       .then((body) => {
         if (body.error) {

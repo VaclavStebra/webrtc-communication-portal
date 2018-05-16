@@ -3,6 +3,7 @@ import 'webrtc-adapter';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import { Tab, Tabs } from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -13,12 +14,17 @@ import AddMessageForm from './components/AddMessageForm';
 
 import { addChatMessage, sendChatMessage } from './actions/chatMessagesActions';
 import { toggleAudio, toggleVideo, toggleScreenShare } from './actions/callActions';
+import { fetchMeeting } from './actions/meetingActions';
 
 export class MeetingPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.addNewMessage = this.addNewMessage.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchMeeting(this.props.meetingId);
   }
 
   addNewMessage(text) {
@@ -49,30 +55,83 @@ export class MeetingPage extends React.Component {
     );
   }
 
-  render() {
+  renderMessages() {
+    if (this.props.meeting.messages.length === 0) {
+      return (
+        <div>
+          <h2>No messages</h2>
+        </div>
+      );
+    }
     return (
-      <Tabs>
-        <Tab label="Video">
-          {this.renderControlButtons()}
-          <div id="remote-streams" className="top-separator" />
-        </Tab>
-        <Tab label="Chat">
-          <div>
+      <div>
+        <MessageList messages={this.props.meeting.messages} />
+      </div>
+    );
+  }
+
+  renderMeetingOverview() {
+    return (
+      <div>
+        <h2>Meeting already ended</h2>
+        {this.renderMessages()}
+      </div>
+    );
+  }
+
+  renderNotAuthorized() {
+    return (
+      <div>
+        <h2>You are not authorized to join this meeting</h2>
+      </div>
+    );
+  }
+
+  render() {
+    if (this.props.meeting) {
+      if (this.props.meeting.isPrivate && !this.props.isUserLoggedIn) {
+        return <Redirect to="/login" />;
+      }
+
+      if (this.props.meeting && this.props.meeting.participants.indexOf(this.props.user) === -1) {
+        return this.renderNotAuthorized();
+      }
+
+      if (this.props.meeting.ended) {
+        return this.renderMeetingOverview();
+      }
+
+      return (
+        <Tabs>
+          <Tab label="Video">
+            {this.renderControlButtons()}
+            <div id="remote-streams" className="top-separator" />
+          </Tab>
+          <Tab label="Chat">
             <div>
-              <AddMessageForm submit={this.addNewMessage} />
+              <div>
+                <AddMessageForm submit={this.addNewMessage} />
+              </div>
+              <MessageList messages={this.props.messages} />
             </div>
-            <MessageList messages={this.props.messages} />
-          </div>
-        </Tab>
-        <Tab label="Participants">
-          <ParticipantsList participants={this.props.participants} />
-        </Tab>
-      </Tabs>
+          </Tab>
+          <Tab label="Participants">
+            <ParticipantsList participants={this.props.participants} />
+          </Tab>
+        </Tabs>
+      );
+    }
+    return (
+      <div>
+        <h2>Invalid meeting</h2>
+      </div>
     );
   }
 }
 
 MeetingPage.propTypes = {
+  isUserLoggedIn: PropTypes.bool.isRequired,
+  meetingId: PropTypes.string.isRequired,
   user: PropTypes.string.isRequired,
   participants: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   messages: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -82,22 +141,27 @@ MeetingPage.propTypes = {
   screenSharingEnabled: PropTypes.bool,
   toggleAudio: PropTypes.func.isRequired,
   toggleVideo: PropTypes.func.isRequired,
-  toggleScreenSharing: PropTypes.func.isRequired
+  toggleScreenSharing: PropTypes.func.isRequired,
+  meeting: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  fetchMeeting: PropTypes.func.isRequired
 };
 
 MeetingPage.defaultProps = {
   audioEnabled: true,
   videoEnabled: true,
-  screenSharingEnabled: false
+  screenSharingEnabled: false,
+  meeting: null
 };
 
 const mapStateToProps = state => ({
-  user: state.user.data.email,
+  isUserLoggedIn: !!state.user.data,
+  user: state.user.data ? state.user.data.email : 'anonymous',
   participants: state.participants,
   messages: state.messages,
   audioEnabled: state.callState.audioEnabled,
   videoEnabled: state.callState.videoEnabled,
-  screenSharingEnabled: state.callState.screenShareEnabled
+  screenSharingEnabled: state.callState.screenShareEnabled,
+  meeting: state.meeting.data.meeting
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -113,6 +177,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleScreenSharing: () => {
     dispatch(toggleScreenShare());
+  },
+  fetchMeeting: (id) => {
+    dispatch(fetchMeeting(id));
   }
 });
 

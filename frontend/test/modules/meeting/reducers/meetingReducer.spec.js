@@ -2,7 +2,7 @@ import { meetingReducer } from '../../../../src/modules/meeting/reducers/meeting
 import * as types from '../../../../src/modules/meeting/constants/ActionTypes';
 
 const initialDataState = {
-  meetings: []
+  meeting: null
 };
 
 const initialUiState = {
@@ -34,9 +34,9 @@ describe('Meeting module', () => {
         expect(meetingReducer(undefined, {})).to.deep.equal(initialState);
       });
 
-      it('handles MEETINGS_FETCH_START', () => {
+      it('handles MEETING_FETCH_START', () => {
         const action = {
-          type: types.MEETINGS_FETCH_START
+          type: types.MEETING_FETCH_START
         };
 
         expect(meetingReducer(initialState, action)).to.deep.equal({
@@ -50,9 +50,9 @@ describe('Meeting module', () => {
         });
       });
 
-      it('handles MEETINGS_FETCH_FAILURE', () => {
+      it('handles MEETING_FETCH_FAILURE', () => {
         const action = {
-          type: types.MEETINGS_FETCH_FAILURE
+          type: types.MEETING_FETCH_FAILURE
         };
 
         expect(meetingReducer(initialState, action)).to.deep.equal({
@@ -66,21 +66,21 @@ describe('Meeting module', () => {
         });
       });
 
-      it('handles MEETINGS_FETCH_SUCCESS', () => {
+      it('handles MEETING_FETCH_SUCCESS', () => {
         const action = {
-          type: types.MEETINGS_FETCH_SUCCESS,
-          meetings: [{
+          type: types.MEETING_FETCH_SUCCESS,
+          meeting: {
             id: 1,
             desc: 'meeting'
-          }]
+          }
         };
 
         expect(meetingReducer(fetchInProgressState, action)).to.deep.equal({
           data: {
-            meetings: [{
+            meeting: {
               id: 1,
               desc: 'meeting'
-            }]
+            }
           },
           uiState: initialUiState
         });

@@ -65,9 +65,6 @@ export class Root extends React.Component {
                   path="/meeting/create"
                   exact
                   render={() => {
-                    if (!this.props.isUserLoggedIn) {
-                      return <Redirect to="/login" />;
-                    }
                     this.props.createMeetingUIReset();
                     return <CreateMeetingPageContainer />;
                   }}
@@ -76,19 +73,24 @@ export class Root extends React.Component {
                   path="/meeting/detail/:id"
                   exact
                   render={({ match }) => {
-                    if (!this.props.isUserLoggedIn) {
-                      return <Redirect to="/login" />;
-                    }
-
                     window.socket = socketSetup(
                       this.props.dispatch,
                       this.props.token,
                       match.params.id,
                       this.props.userId
                     );
-                    this.props.addParticipant({ id: this.props.userId, email: this.props.email });
 
-                    return <MeetingPageContainer />;
+                    if (this.props.userId) {
+                      this.props.addParticipant({ id: this.props.userId, email: this.props.email });
+                    } else {
+                      this.props.addParticipant({ id: 'anonymousUser', email: 'anonymous' });
+                    }
+
+                    return (
+                      <MeetingPageContainer
+                        meetingId={match.params.id}
+                      />
+                    );
                   }}
                 />
               </div>

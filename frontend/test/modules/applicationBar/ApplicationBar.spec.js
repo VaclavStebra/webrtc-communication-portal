@@ -50,7 +50,7 @@ describe('ApplicationBar', () => {
       'IconMenu',
       'AppBar does not have IconMenu when user is logged in'
     );
-    expect(rightIcon.props.children.type.name).to.equal('MenuItem');
-    expect(rightIcon.props.children.props.primaryText).to.equal('Sign out');
+    expect(rightIcon.props.children[1].type.name).to.equal('MenuItem');
+    expect(rightIcon.props.children[1].props.primaryText).to.equal('Sign out');
   });
 });
