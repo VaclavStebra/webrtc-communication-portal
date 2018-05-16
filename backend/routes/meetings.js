@@ -65,4 +65,24 @@ router.post(
     return res.json({ message: 'Meeting created', id: meeting._id });
   }));
 
+router.get(
+  '/recording',
+  wrapAsync(async function (req, res, next) {
+    const { meetingId } = req.query;
+
+    if (!meetingId) {
+      return next({ status: 422, message: 'Invalid params' });
+    }
+
+    const meetingManager = new MeetingManager();
+    const meeting = await meetingManager.getMeeting(meetingId);
+
+    if (!meeting || !meeting.record) {
+      return next({ status: 422, message: 'Invalid params' });
+    }
+
+    const file = `/tmp/${meetingId}.webm`;
+    return res.download(file);
+  }));
+
 module.exports = router;
