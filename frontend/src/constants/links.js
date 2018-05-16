@@ -5,6 +5,7 @@ export const FI_ME = 'https://is.muni.cz/person/422186';
 export const HOME_PAGE = 'http://localhost:3000/';
 export const CREATE_MEETING_PAGE = `${HOME_PAGE}#/meeting/create`;
 export const MEETING_RECORDING_BASE = 'http://localhost:3001/meetings/recording?meetingId=';
+export const MEETING_FILES_BASE = 'http://localhost:3001/meetings/files?fileName=';
 
 export default {
   GITHUB,
@@ -12,5 +13,6 @@ export default {
   FI,
   FI_ME,
   CREATE_MEETING_PAGE,
-  MEETING_RECORDING_BASE
+  MEETING_RECORDING_BASE,
+  MEETING_FILES_BASE
 };

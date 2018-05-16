@@ -326,7 +326,9 @@ class CallManager {
     }
 
     if (Array.from(room.participants.values()).length === 0) {
-      room.recorderEndpoint.stop();
+      if (room.recorderEndpoint) {
+        room.recorderEndpoint.stop();
+      }
       room.pipeline.release();
       this.rooms.delete(user.roomName);
 

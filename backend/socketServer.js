@@ -81,6 +81,11 @@ module.exports = function (server) {
       }
     });
 
+    socket.on('file uploaded', file => {
+      const timestamp = new Date().getTime();
+      socket.to(socket.room).emit('file uploaded', { timestamp, name: file });
+    });
+
     socket.on('message', message => {
       switch (message.id) {
         case 'receiveVideoFrom': {
