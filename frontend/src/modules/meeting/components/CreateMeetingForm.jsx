@@ -12,12 +12,14 @@ export default class CreateMeetingForm extends React.Component {
     this.state = {
       title: '',
       isPrivate: true,
-      participants: ''
+      participants: '',
+      record: false
     };
 
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleIsPrivateChange = this.handleIsPrivateChange.bind(this);
     this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
+    this.handleRecordChange = this.handleRecordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -33,14 +35,19 @@ export default class CreateMeetingForm extends React.Component {
     this.setState({ isPrivate: isChecked });
   }
 
+  handleRecordChange(event, isChecked) {
+    this.setState({ record: isChecked });
+  }
+
   handleSubmit() {
     const {
-      title, isPrivate, participants
+      title, isPrivate, participants, record
     } = this.state;
 
     this.props.onSubmit({
       title,
       isPrivate,
+      record,
       participants: isPrivate ? participants : ''
     }, this.props.token);
   }
@@ -55,6 +62,12 @@ export default class CreateMeetingForm extends React.Component {
           onChange={this.handleTitleChange}
         />
         <br />
+        <div className="toggle">
+          <Toggle
+            label="Record"
+            onToggle={this.handleRecordChange}
+          />
+        </div>
         <div className="toggle">
           <Toggle
             label="Private"

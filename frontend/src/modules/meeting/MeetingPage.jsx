@@ -93,7 +93,8 @@ export class MeetingPage extends React.Component {
         return <Redirect to="/login" />;
       }
 
-      if (this.props.meeting && this.props.meeting.participants.indexOf(this.props.user) === -1) {
+      if (this.props.meeting.isPrivate
+        && this.props.meeting.participants.indexOf(this.props.user) === -1) {
         return this.renderNotAuthorized();
       }
 
