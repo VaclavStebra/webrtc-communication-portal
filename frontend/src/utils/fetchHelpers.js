@@ -33,3 +33,12 @@ export function post(url, body, token) {
   })
     .then(res => res.json());
 }
+
+export function postFile(url, body, token) {
+  return fetch(`${API_URL}${url}`, {
+    method: 'POST',
+    body,
+    headers: new Headers({ Authorization: `Bearer ${token}` })
+  })
+    .then(res => res.json());
+}

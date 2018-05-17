@@ -11,7 +11,8 @@ const MeetingSchema = new Schema({
   private: Boolean,
   record: Boolean,
   messages: [],
-  participants: []
+  participants: [],
+  files: []
 });
 
 mongoose.model('Meeting', MeetingSchema);

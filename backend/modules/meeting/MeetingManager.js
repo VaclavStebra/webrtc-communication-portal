@@ -14,7 +14,8 @@ class MeetingManager {
       private: params.private,
       messages: [],
       participants: params.participants,
-      record: params.record
+      record: params.record,
+      files: []
     });
 
     return meeting.save();
@@ -23,7 +24,7 @@ class MeetingManager {
   getMeeting(id) {
     const options = {
       criteria: { _id: id },
-      select: 'title startDate ended private messages participants record'
+      select: 'title startDate ended private messages participants record files'
     };
 
     return Meeting.findOne(options.criteria).select(options.select).exec()
@@ -43,6 +44,19 @@ class MeetingManager {
     const meeting = await this.getMeeting(meetingId);
 
     meeting.messages.push(message);
+
+    return meeting.save();
+  }
+
+  async addFileToMeeting(meetingId, file) {
+    const data = {
+      timestamp: moment.utc().valueOf(),
+      file
+    };
+
+    const meeting = await this.getMeeting(meetingId);
+
+    meeting.files.push(data);
 
     return meeting.save();
   }

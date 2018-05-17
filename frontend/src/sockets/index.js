@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 import { API_URL } from '../../config/config';
 import { addParticipant, removeParticipant } from '../modules/meeting/actions/participantsActions';
-import { addChatMessage } from '../modules/meeting/actions/chatMessagesActions';
+import { addChatMessage, addFileUploaded } from '../modules/meeting/actions/chatMessagesActions';
 
 const participants = {};
 let thisUserSocket = null;
@@ -211,6 +211,10 @@ const setupSocket = (dispatch, token, meetingId, userId) => {
     const { email, text } = msg;
     const timestamp = new Date().getTime();
     dispatch(addChatMessage({ email, text, timestamp }));
+  });
+
+  socket.on('file uploaded', (file) => {
+    dispatch(addFileUploaded(file));
   });
 
   socket.on('peer.disconnected', (user) => {

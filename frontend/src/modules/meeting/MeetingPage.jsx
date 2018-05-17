@@ -11,11 +11,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 import ParticipantsList from './components/ParticipantsList';
 import MessageList from './components/MessageList';
 import AddMessageForm from './components/AddMessageForm';
+import UploadFileForm from './components/UploadFile';
+import FileList from './components/FileList';
 
 import { addChatMessage, sendChatMessage } from './actions/chatMessagesActions';
 import { toggleAudio, toggleVideo, toggleScreenShare } from './actions/callActions';
 import { fetchMeeting } from './actions/meetingActions';
-import { MEETING_RECORDING_BASE } from '../../constants/links';
+import { MEETING_RECORDING_BASE, MEETING_FILES_BASE } from '../../constants/links';
 
 export class MeetingPage extends React.Component {
   constructor(props) {
@@ -82,11 +84,29 @@ export class MeetingPage extends React.Component {
     return null;
   }
 
+  renderFiles() {
+    if (this.props.meeting.files.length > 0) {
+      const files = this.props.meeting.files.map(file => (
+        <div key={file.timestamp}>
+          <a href={`${MEETING_FILES_BASE}${file.file}&meetingId=${this.props.meetingId}`}>{file.file}</a>
+        </div>
+      ));
+      return (
+        <div>
+          <h3>Files shared</h3>
+          {files}
+        </div>
+      );
+    }
+    return null;
+  }
+
   renderMeetingOverview() {
     return (
       <div>
         <h2>Meeting already ended</h2>
         {this.renderRecordingLink()}
+        {this.renderFiles()}
         {this.renderMessages()}
       </div>
     );
@@ -126,6 +146,13 @@ export class MeetingPage extends React.Component {
               <div>
                 <AddMessageForm submit={this.addNewMessage} />
               </div>
+              <div>
+                <UploadFileForm meetingId={this.props.meetingId} />
+              </div>
+              <FileList
+                files={this.props.files}
+                meetingId={this.props.meetingId}
+              />
               <MessageList messages={this.props.messages} />
             </div>
           </Tab>
@@ -157,7 +184,8 @@ MeetingPage.propTypes = {
   toggleVideo: PropTypes.func.isRequired,
   toggleScreenSharing: PropTypes.func.isRequired,
   meeting: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  fetchMeeting: PropTypes.func.isRequired
+  fetchMeeting: PropTypes.func.isRequired,
+  files: PropTypes.array.isRequired // eslint-disable-line react/forbid-prop-types
 };
 
 MeetingPage.defaultProps = {
@@ -175,7 +203,8 @@ const mapStateToProps = state => ({
   audioEnabled: state.callState.audioEnabled,
   videoEnabled: state.callState.videoEnabled,
   screenSharingEnabled: state.callState.screenShareEnabled,
-  meeting: state.meeting.data.meeting
+  meeting: state.meeting.data.meeting,
+  files: state.files
 });
 
 const mapDispatchToProps = dispatch => ({
